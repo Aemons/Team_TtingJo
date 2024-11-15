@@ -75,8 +75,8 @@ void ATeam_TtingJoCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 	}
 	
 	// Set up action bindings
-	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
-		
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) 
+	{
 		// Jumping
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
@@ -86,6 +86,10 @@ void ATeam_TtingJoCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ATeam_TtingJoCharacter::Look);
+
+		//WeaponComponent InputAction Delegate Bind
+		if (OnInputBindDelegate.IsBound())
+			OnInputBindDelegate.Broadcast(EnhancedInputComponent);
 	}
 	else
 	{

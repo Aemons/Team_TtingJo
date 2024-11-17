@@ -11,6 +11,10 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 
+#include "JHS_Component/JHS_WeaponComponent.h"
+#include "JHS_Component/JHS_StateComponent.h"
+#include "JHS_Component/JHS_MovemetComponent.h"
+
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 //////////////////////////////////////////////////////////////////////////
@@ -18,6 +22,11 @@ DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 ATeam_TtingJoCharacter::ATeam_TtingJoCharacter()
 {
+	//Set ActorComponent
+	WeaponComp = CreateDefaultSubobject<UJHS_WeaponComponent>(TEXT("WeaponComponent"));
+	StateComp = CreateDefaultSubobject<UJHS_StateComponent>(TEXT("StateComponent"));
+	MovementComp = CreateDefaultSubobject<UJHS_MovemetComponent>(TEXT("MovementComponent"));
+	
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 		
@@ -35,6 +44,7 @@ ATeam_TtingJoCharacter::ATeam_TtingJoCharacter()
 	GetCharacterMovement()->JumpZVelocity = 700.f;
 	GetCharacterMovement()->AirControl = 0.35f;
 	GetCharacterMovement()->MaxWalkSpeed = 500.f;
+	//////////////////////////
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;

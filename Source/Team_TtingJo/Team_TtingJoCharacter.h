@@ -54,6 +54,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
 
+//Set JHS Component
+public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ActorComponent", meta = (DisplayPriority = "0"))
+	class UJHS_WeaponComponent* WeaponComp;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ActorComponent", meta = (DisplayPriority = "1"))
+	class UJHS_StateComponent* StateComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ActorComponent", meta = (DisplayPriority = "1"))
+	class UJHS_MovemetComponent* MovementComp;
+////////////////////////////////////////////////////////////////
+
 public:
 	ATeam_TtingJoCharacter();
 	

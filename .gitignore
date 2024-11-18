@@ -75,3 +75,6 @@ DerivedDataCache/*
 
 #Content Ignore
 Content/StarterContent/
+
+#Rider
+Plugins/Developer/RiderLink/*

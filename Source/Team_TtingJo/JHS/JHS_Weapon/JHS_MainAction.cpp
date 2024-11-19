@@ -4,6 +4,7 @@
 #include "GameFramework/Character.h"
 
 #include "JHS_Component/JHS_StateComponent.h"
+#include "JHS_Component/JHS_MovemetComponent.h"
 
 #include "JHS_Attachment.h"
 #include "JHS_Equipment.h"
@@ -18,6 +19,7 @@ void UJHS_MainAction::BeginPlay(AJHS_Attachment* InAttachment, UJHS_Equipment* I
 	World = OwnerCharacter->GetWorld();
 
 	StateComp = Cast<UJHS_StateComponent>(OwnerCharacter->GetComponentByClass(UJHS_StateComponent::StaticClass()));
+	MovementComp = Cast<UJHS_MovemetComponent>(OwnerCharacter->GetComponentByClass(UJHS_MovemetComponent::StaticClass()));
 
 	MainActionData = InMainActionData;
 }
@@ -38,5 +40,7 @@ void UJHS_MainAction::End_MainAction()
 	bInAction = false;
 	bBeginAction = false;
 
+	MovementComp->Move();
 	StateComp->SetIdleMode();
+	
 }

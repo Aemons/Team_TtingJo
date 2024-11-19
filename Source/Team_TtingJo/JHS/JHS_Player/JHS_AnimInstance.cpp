@@ -33,6 +33,8 @@ void UJHS_AnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 	//Player State Check Function
 	ShouldMove();
+	Falling();
+	Dodge();
 }
 
 void UJHS_AnimInstance::PlayerSpeed()
@@ -60,6 +62,19 @@ void UJHS_AnimInstance::ShouldMove()
 	else
 		bShouldMove = false;
 
+}
+
+void UJHS_AnimInstance::Falling()
+{
+	bIsFalling = OwnerCharacter->GetCharacterMovement()->IsFalling();
+}
+
+void UJHS_AnimInstance::Dodge()
+{
+	if (ATeam_TtingJoCharacter* Player= Cast<ATeam_TtingJoCharacter>(OwnerCharacter))
+	{
+		bIsWeaponDodge = Player->IsDodge();
+	}
 }
 
 void UJHS_AnimInstance::OnWeaponTypeChanged(EWeaponType InPrevType, EWeaponType InNewType)

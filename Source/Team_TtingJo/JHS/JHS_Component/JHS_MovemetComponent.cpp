@@ -34,6 +34,16 @@ void UJHS_MovemetComponent::OnRun()
 	SetSpeed(ESpeedType::Run);
 }
 
+void UJHS_MovemetComponent::Move()
+{
+	bCanMove = true;
+}
+
+void UJHS_MovemetComponent::Stop()
+{
+	bCanMove = false;
+}
+
 void UJHS_MovemetComponent::EnableControlRotation()
 {
 	OwnerCharacter->bUseControllerRotationYaw = true;

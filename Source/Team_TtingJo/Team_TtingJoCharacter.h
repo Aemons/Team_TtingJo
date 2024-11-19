@@ -28,6 +28,7 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+	FORCEINLINE bool IsDodge() { return bIsDodge; }
 
 public:
 	/** Camera boom positioning the camera behind the character */
@@ -54,15 +55,19 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
 
+	/** Dodge Input Action**/
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* DodgeAction;
+
 //Set JHS Component
 public:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ActorComponent", meta = (DisplayPriority = "0"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ActorComponent", meta = (DisplayPriority = "1"))
 	class UJHS_WeaponComponent* WeaponComp;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ActorComponent", meta = (DisplayPriority = "1"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ActorComponent", meta = (DisplayPriority = "2"))
 	class UJHS_StateComponent* StateComp;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ActorComponent", meta = (DisplayPriority = "1"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ActorComponent", meta = (DisplayPriority = "3"))
 	class UJHS_MovemetComponent* MovementComp;
 ////////////////////////////////////////////////////////////////
 
@@ -75,7 +80,10 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
-			
+	
+	void OnDodge();
+	void OffDodge();
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -85,5 +93,8 @@ protected:
 
 public:
 	FInputBindDelegate OnInputBindDelegate;
+
+private:
+	bool bIsDodge;
 };
 

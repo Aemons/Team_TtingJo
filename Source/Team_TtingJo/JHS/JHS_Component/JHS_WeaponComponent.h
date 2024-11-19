@@ -27,7 +27,7 @@ public://Inline Function
 
 public:
 	FORCEINLINE bool IsUnarmedMode() { return Type == EWeaponType::Max; }
-	FORCEINLINE bool UsGreatSword() { return Type == EWeaponType::GreatSword; }
+	FORCEINLINE bool IsGreatSword() { return Type == EWeaponType::GreatSword; }
 
 public://Property InputAction Value
 	//무기종류 추가시 InpuAction 추가

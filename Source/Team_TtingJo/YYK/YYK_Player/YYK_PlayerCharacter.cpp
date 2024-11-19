@@ -4,6 +4,8 @@
 #include "YYK_PlayerCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Team_TtingJo/YYK/YYK_Component/YYK_PlayerMoveComponent.h"
+#include "EnhancedInputComponent.h"
 
 // Sets default values
 AYYK_PlayerCharacter::AYYK_PlayerCharacter()
@@ -16,6 +18,8 @@ AYYK_PlayerCharacter::AYYK_PlayerCharacter()
 
 	cameraComp=CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	cameraComp->SetupAttachment(springArmComp);
+
+	playerMove=CreateDefaultSubobject<UYYK_PlayerMoveComponent>(TEXT("PlayerMoveComponent"));
 }
 
 // Called when the game starts or when spawned
@@ -37,5 +41,11 @@ void AYYK_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	auto playerInput=CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
+	if(playerInput)
+	{
+		// 컴포넌트에서 입력 바인딩 처리하도록 호출
+		playerMove->SetupInputBinding(playerInput);
+	}
 }
 

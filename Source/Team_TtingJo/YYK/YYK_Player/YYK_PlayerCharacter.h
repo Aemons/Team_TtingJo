@@ -17,6 +17,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	TObjectPtr<class UCameraComponent> cameraComp;
+
+	UPROPERTY(VisibleAnywhere, Category = Component)
+	TObjectPtr<class UYYK_PlayerBaseComponent> playerMove;
 	
 public:
 	// Sets default values for this character's properties

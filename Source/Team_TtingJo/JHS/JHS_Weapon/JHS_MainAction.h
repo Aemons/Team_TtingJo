@@ -66,6 +66,7 @@ protected:
 	class UWorld* World;
 
 	class UJHS_StateComponent* StateComp;
+	class UJHS_MovemetComponent* MovementComp;
 
 	TArray<FMainActionData> MainActionData;
 	

@@ -39,11 +39,14 @@ public:
 	void OnJog();
 	void OnRun();
 
+	void Move();
+	void Stop();
+
 	void EnableControlRotation();
 	void DisableControlRotation();
 
 private:
 	class ACharacter* OwnerCharacter;
-
+	bool bCanMove = true;
 
 };

@@ -31,6 +31,14 @@ protected://Bool Value
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CheckValue")
 	bool bPlayerRun;
 
+	//Player가 떨어지고 있는지
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CheckValue")
+	bool bIsFalling;
+
+	//Player가 회피명령을 줫는지
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CheckValue")
+	bool bIsWeaponDodge;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CheckValue")
 	class ACharacter* OwnerCharacter;
 
@@ -42,6 +50,8 @@ private:
 	void PlayerSpeed();
 	void PlayerDirection();
 	void ShouldMove();
+	void Falling();
+	void Dodge();
 
 private:
 	UFUNCTION()

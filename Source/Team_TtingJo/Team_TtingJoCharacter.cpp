@@ -97,6 +97,15 @@ void ATeam_TtingJoCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ATeam_TtingJoCharacter::Look);
 
+
+		//TODO : 회피는 일단 보류 일단 나중에 수정 및 보완
+		// 지금은 회피시 Montage는 나오는데 키를 때면 바로 멈춤
+		// 키를 떄도 회피키를 누르면 일정거리 만큼은 이동, 연속 회피 로직 수정 및 추가예정
+		//Dodge
+		EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Started, this, &ATeam_TtingJoCharacter::OnDodge);
+		EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Completed, this, &ATeam_TtingJoCharacter::OffDodge);
+		EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Canceled, this, &ATeam_TtingJoCharacter::OffDodge);
+
 		//WeaponComponent InputAction Delegate Bind
 		if (OnInputBindDelegate.IsBound())
 			OnInputBindDelegate.Broadcast(EnhancedInputComponent);
@@ -140,5 +149,22 @@ void ATeam_TtingJoCharacter::Look(const FInputActionValue& Value)
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
+	}
+}
+
+void ATeam_TtingJoCharacter::OnDodge()
+{
+	if (WeaponComp->IsUnarmedMode() == false)
+	{
+		bIsDodge = true;
+	}
+
+}
+
+void ATeam_TtingJoCharacter::OffDodge()
+{
+	if (WeaponComp->IsUnarmedMode() == false)
+	{
+		bIsDodge = false;
 	}
 }

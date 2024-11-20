@@ -27,6 +27,14 @@ void UYYK_PlayerMoveComponent::Move(const struct FInputActionValue& inputValue)
 	direction.Y=value.Y;
 }
 
+void UYYK_PlayerMoveComponent::PlayerMove()
+{
+	// 플레이어 이동 처리
+	direction=FTransform(me->GetControlRotation()).TransformPosition(direction);
+	me->AddMovementInput(direction);
+	direction=FVector::ZeroVector;
+}
+
 void UYYK_PlayerMoveComponent::SetupInputBinding(class UEnhancedInputComponent* PlayerInput)
 {
 	Super::SetupInputBinding(PlayerInput);

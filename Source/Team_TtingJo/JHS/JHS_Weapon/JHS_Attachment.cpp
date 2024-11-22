@@ -26,6 +26,8 @@ void AJHS_Attachment::BeginPlay()
 		{
 			Shape->OnComponentBeginOverlap.AddDynamic(this, &AJHS_Attachment::OnComponentBeginOverlap);
 			Shape->OnComponentEndOverlap.AddDynamic(this, &AJHS_Attachment::OnComponentEndOverlap);
+
+			Collisions.Add(Shape);
 		}
 	}
 

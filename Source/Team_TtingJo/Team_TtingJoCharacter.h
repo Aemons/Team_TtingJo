@@ -28,7 +28,6 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
-	FORCEINLINE bool IsDodge() { return bIsDodge; }
 
 public:
 	/** Camera boom positioning the camera behind the character */
@@ -57,7 +56,7 @@ public:
 
 	/** Dodge Input Action**/
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* DodgeAction;
+	UInputAction* RunAction;
 
 //Set JHS Component
 public:
@@ -81,8 +80,8 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 	
-	void OnDodge();
-	void OffDodge();
+	void OnRunnimg();
+	void OffRunning();
 
 protected:
 	// APawn interface
@@ -95,6 +94,6 @@ public:
 	FInputBindDelegate OnInputBindDelegate;
 
 private:
-	bool bIsDodge;
+	bool bIsRunning;
 };
 

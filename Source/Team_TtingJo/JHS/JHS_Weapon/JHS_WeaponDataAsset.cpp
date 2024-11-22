@@ -40,7 +40,7 @@ void UJHS_WeaponDataAsset::BeginPlay(ACharacter* InOwner)
 	if (!!MainActionClass)
 	{
 		MainAction = NewObject<UJHS_MainAction>(this, MainActionClass);
-		MainAction->BeginPlay(Attachment, Equipment, InOwner, MainActionData);
+		MainAction->BeginPlay(Attachment, Equipment, InOwner, MainActionData, HitDatas);
 
 		if (!!Attachment)
 		{

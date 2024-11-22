@@ -34,6 +34,9 @@ private://Weapon Class Default Data Setting
 	UPROPERTY(EditAnywhere)
 	TArray<FMainActionData> MainActionData;
 
+	UPROPERTY(EditAnywhere)
+	TArray<FHitData> HitDatas;
+
 private://Weapon Class Object
 	UPROPERTY()
 	class AJHS_Attachment* Attachment;

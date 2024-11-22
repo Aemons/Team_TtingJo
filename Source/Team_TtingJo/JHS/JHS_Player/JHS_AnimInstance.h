@@ -51,7 +51,6 @@ private:
 	void PlayerDirection();
 	void ShouldMove();
 	void Falling();
-	void Dodge();
 
 private:
 	UFUNCTION()

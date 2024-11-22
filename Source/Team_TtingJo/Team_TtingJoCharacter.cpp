@@ -102,9 +102,9 @@ void ATeam_TtingJoCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 		// 지금은 회피시 Montage는 나오는데 키를 때면 바로 멈춤
 		// 키를 떄도 회피키를 누르면 일정거리 만큼은 이동, 연속 회피 로직 수정 및 추가예정
 		//Dodge
-		EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Started, this, &ATeam_TtingJoCharacter::OnDodge);
-		EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Completed, this, &ATeam_TtingJoCharacter::OffDodge);
-		EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Canceled, this, &ATeam_TtingJoCharacter::OffDodge);
+		EnhancedInputComponent->BindAction(RunAction, ETriggerEvent::Started, this, &ATeam_TtingJoCharacter::OnRunnimg);
+		EnhancedInputComponent->BindAction(RunAction, ETriggerEvent::Completed, this, &ATeam_TtingJoCharacter::OffRunning);
+		EnhancedInputComponent->BindAction(RunAction, ETriggerEvent::Canceled, this, &ATeam_TtingJoCharacter::OffRunning);
 
 		//WeaponComponent InputAction Delegate Bind
 		if (OnInputBindDelegate.IsBound())
@@ -152,19 +152,24 @@ void ATeam_TtingJoCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
-void ATeam_TtingJoCharacter::OnDodge()
+void ATeam_TtingJoCharacter::OnRunnimg()
 {
-	if (WeaponComp->IsUnarmedMode() == false)
+	//Run이 True가 될 상황은?
+	//무기를 들고 있지 않을때, Falling 이 false일때, 움직이고 있는 경우
+
+	if (WeaponComp->IsUnarmedMode() == true && GetCharacterMovement()->IsFalling() == false && GetVelocity().Size2D() > 5.0f)
 	{
-		bIsDodge = true;
+		bIsRunning = true;
+		MovementComp->OnRun();
 	}
 
 }
 
-void ATeam_TtingJoCharacter::OffDodge()
+void ATeam_TtingJoCharacter::OffRunning()
 {
-	if (WeaponComp->IsUnarmedMode() == false)
+	if (WeaponComp->IsUnarmedMode() == true && GetCharacterMovement()->IsFalling() == false && GetVelocity().Size2D() > 5.0f)
 	{
-		bIsDodge = false;
+		bIsRunning = false;
+		MovementComp->OnJog();
 	}
 }

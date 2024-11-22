@@ -37,10 +37,10 @@ public:
 	static void LOG(const FString& InValue);
 
 	//Custom Display Print Log Funtion
-	//InValue = int32, InKey = 순서, InDuration = 표시시간, InColor = 색
-	static void PRINT(int32 InValue, int32 InKey = -1, float InDuration = 5, FColor InColor = FColor::Blue);
-	//InValue = float, InKey = 순서, InDuration = 표시시간, InColor = 색
-	static void PRINT(float InValue, int32 InKey = -1, float InDuration = 5, FColor InColor = FColor::Blue);
-	//InValue = TEXT("내용"), InKey = 순서, InDuration = 표시시간, InColor = 색
-	static void PRINT(const FString& InValue, int32 InKey = -1, float InDuration = 5, FColor InColor = FColor::Blue);
+	//InValue = int32, InColor = 색, InKey = 순서, InDuration = 표시시간
+	static void PRINT(int32 InValue, FColor InColor = FColor::Red, int32 InKey = -1, float InDuration = 5);
+	//InValue = float, InColor = 색, InKey = 순서, InDuration = 표시시간
+	static void PRINT(float InValue, FColor InColor = FColor::Red, int32 InKey = -1, float InDuration = 5);
+	//InValue = TEXT("내용"), InColor = 색, InKey = 순서, InDuration = 표시시간
+	static void PRINT(const FString& InValue, FColor InColor = FColor::Red, int32 InKey = -1, float InDuration = 5);
 };

@@ -27,7 +27,8 @@ public:
 		class AJHS_Attachment* InAttachment,
 		class UJHS_Equipment* InEquipment,
 		class ACharacter* InOwner,
-		const TArray<FMainActionData>& InMainActionData
+		const TArray<FMainActionData>& InMainActionData,
+		const TArray<FHitData>& InHitData
 	);
 //////////////////////////////////////////////////////////////////
 
@@ -68,6 +69,7 @@ protected:
 	class UJHS_StateComponent* StateComp;
 	class UJHS_MovemetComponent* MovementComp;
 
-	TArray<FMainActionData> MainActionData;
+	TArray<FMainActionData> MainActionDatas;
+	TArray<FHitData> HitDatas;
 	
 };

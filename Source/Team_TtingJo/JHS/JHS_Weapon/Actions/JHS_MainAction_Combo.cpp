@@ -6,7 +6,7 @@
 
 void UJHS_MainAction_Combo::MainAction()
 {
-	CheckTrue(MainActionData.Num() < 1);
+	CheckTrue(MainActionDatas.Num() < 1);
 
 	if (bEnable)
 	{
@@ -20,7 +20,7 @@ void UJHS_MainAction_Combo::MainAction()
 
 	Super::MainAction();
 
-	MainActionData[Index].MainAction(OwnerCharacter);
+	MainActionDatas[Index].MainAction(OwnerCharacter);
 }
 
 void UJHS_MainAction_Combo::Begin_MainAction()
@@ -30,8 +30,9 @@ void UJHS_MainAction_Combo::Begin_MainAction()
 	CheckFalse(bExist);
 
 	bExist = false;
+
 	//Combo Count ++
-	MainActionData[++Index].MainAction(OwnerCharacter);
+	MainActionDatas[++Index].MainAction(OwnerCharacter);
 }
 
 void UJHS_MainAction_Combo::End_MainAction()
@@ -52,8 +53,11 @@ void UJHS_MainAction_Combo::OnAttachmentBeginOverlap(ACharacter* InAttacker, AAc
 		return;
 
 	HitTargets.Add(InOther);
+	JHS_Global::PRINT(TEXT("Overlap"));
+	JHS_Global::PRINT(InOther->GetActorLabel());
 
 	//TODO :: Hit data 만들면 추후 추가바람
+	//HitDatas[Index].SendDamage(InAttacker, InAttackCuaser, InOther);
 }
 
 void UJHS_MainAction_Combo::OnAttachmentEndCollision()

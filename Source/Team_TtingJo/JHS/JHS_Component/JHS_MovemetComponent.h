@@ -18,7 +18,7 @@ class TEAM_TTINGJO_API UJHS_MovemetComponent : public UActorComponent
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Speed")
-	float Speed[(int32)ESpeedType::Max] = { 200, 400, 600 };
+	float Speed[(int32)ESpeedType::Max] = { 200, 500, 800 };
 
 public:
 	FORCEINLINE float GetWalkSpeed() { return Speed[(int32)ESpeedType::Walk]; }

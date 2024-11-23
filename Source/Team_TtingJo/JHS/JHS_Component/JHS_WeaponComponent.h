@@ -18,12 +18,15 @@ class TEAM_TTINGJO_API UJHS_WeaponComponent : public UActorComponent
 {
 	GENERATED_BODY()
 	
+public://Inline Function
+	FORCEINLINE EWeaponType GetWeaponType() { return Type; }
+
 private:
 	UPROPERTY(EditAnywhere, Category = "DataAsset")
 	class UJHS_WeaponDataAsset* DataAssets[(int32)EWeaponType::Max];
 
-public://Inline Function
-	FORCEINLINE EWeaponType GetWeaponType() { return Type; }
+	UPROPERTY(EditAnywhere, Category = "WeaponChangeTime")
+	float TimeOut = 5.0f;
 
 public:
 	FORCEINLINE bool IsUnarmedMode() { return Type == EWeaponType::Max; }
@@ -86,5 +89,6 @@ public://Delegate Value
 private://Class Member Value
 	ACharacter* OwnerCharacter;
 	EWeaponType Type = EWeaponType::Max;
+	FTimerHandle TimeOutHandle;
 		
 };

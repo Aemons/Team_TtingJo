@@ -38,6 +38,8 @@ void UJHS_WeaponComponent::BeginPlay()
 void UJHS_WeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+
 }
 
 void UJHS_WeaponComponent::InitializeComponent()
@@ -121,8 +123,18 @@ void UJHS_WeaponComponent::SetGreatSwordMode()
 
 void UJHS_WeaponComponent::MainAction()
 {
+	//MainAction이 호출되면 타이머 리셋
+	GetWorld()->GetTimerManager().ClearTimer(TimeOutHandle);
+
+	//따로 무기를 장착하는 입력말고 좌클릭시 무기타입 여부를 따져서 무기장착
+	if (Type == EWeaponType::Max)
+		SetGreatSwordMode();
+
 	if (!!GetMainAction())
 		GetMainAction()->MainAction();
+
+	//일정시간 동안 입력이 없으면 SetUnarmedMode 호출
+	GetWorld()->GetTimerManager().SetTimer(TimeOutHandle, this, &UJHS_WeaponComponent::SetUnarmedMode, TimeOut, false);
 }
 
 void UJHS_WeaponComponent::SkillAction_Pressed()

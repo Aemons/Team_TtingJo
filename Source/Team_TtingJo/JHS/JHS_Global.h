@@ -22,8 +22,8 @@
 #define CheckNullResult(x, y) { if(x == nullptr) return y;}
 
 //Function Line Macro
-#define LOG_LINE() { JHS_Global::LOG(__FILE__, __FUNCTION__,__LINE__); }
-#define PRINT_LINE() { JHS_Global::PRINT(__FILE__, __FUNCTION__,__LINE__);}
+#define LOG_LINE() { JHS_Global::LOG(__FILE__, __FUNCTION__, __LINE__); }
+#define PRINT_LINE() { JHS_Global::PRINT_LINE_FUNC(FString(__FILE__), FString(__FUNCTION__), __LINE__); }
 
 class TEAM_TTINGJO_API JHS_Global
 {
@@ -43,4 +43,7 @@ public:
 	static void PRINT(float InValue, FColor InColor = FColor::Red, int32 InKey = -1, float InDuration = 5);
 	//InValue = TEXT("내용"), InColor = 색, InKey = 순서, InDuration = 표시시간
 	static void PRINT(const FString& InValue, FColor InColor = FColor::Red, int32 InKey = -1, float InDuration = 5);
+
+	//Macro Call Function
+	static void PRINT_LINE_FUNC(const FString& InFile, const FString& InFunc, int32 InLine, FColor InColor = FColor::Yellow, int32 InKey = -1, float InDuration = 5);
 };

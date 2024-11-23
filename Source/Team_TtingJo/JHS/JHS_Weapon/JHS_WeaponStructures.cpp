@@ -37,9 +37,7 @@ void FHitData::SendDamage(ACharacter* InAttacker, AActor* InAttackCuaser, AChara
 
 void FHitData::PlayMontage(ACharacter* InOwner)
 {
-	UJHS_MovemetComponent* MovementComp = Cast<UJHS_MovemetComponent>(InOwner->GetComponentByClass(UJHS_MovemetComponent::StaticClass()));
-
-	if (!!MovementComp)
+	if (!!Montage)
 		InOwner->PlayAnimMontage(Montage, PlayRate);
 }
 

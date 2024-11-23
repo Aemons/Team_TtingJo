@@ -53,7 +53,7 @@ public:
 	class UAnimMontage* Montage;
 
 	UPROPERTY(EditAnywhere)
-	float PlayRate;
+	float PlayRate = 1.0f;
 
 	UPROPERTY(EditAnywhere)
 	float Damage;

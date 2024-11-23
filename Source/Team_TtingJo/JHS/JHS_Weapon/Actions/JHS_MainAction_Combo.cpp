@@ -53,11 +53,9 @@ void UJHS_MainAction_Combo::OnAttachmentBeginOverlap(ACharacter* InAttacker, AAc
 		return;
 
 	HitTargets.Add(InOther);
-	JHS_Global::PRINT(TEXT("Overlap"));
-	JHS_Global::PRINT(InOther->GetActorLabel());
 
 	//TODO :: Hit data 만들면 추후 추가바람
-	//HitDatas[Index].SendDamage(InAttacker, InAttackCuaser, InOther);
+	HitDatas[Index].SendDamage(InAttacker, InAttackCuaser, InOther);
 }
 
 void UJHS_MainAction_Combo::OnAttachmentEndCollision()

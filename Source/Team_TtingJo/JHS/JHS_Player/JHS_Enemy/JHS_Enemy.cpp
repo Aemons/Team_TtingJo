@@ -1,34 +1,239 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+#include "JHS_Enemy.h"
+#include "JHS_Global.h"
 
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Components/PoseableMeshComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
-#include "JHS/JHS_Player/JHS_Enemy/JHS_Enemy.h"
+#include "Materials/MaterialInstanceDynamic.h"
+#include "Materials/MaterialInterface.h"
 
-// Sets default values
+#include "JHS_Component/JHS_StateComponent.h"
+#include "JHS_Component/JHS_MovemetComponent.h"
+#include "JHS_Component/JHS_WeaponComponent.h"
+#include "JHS_Component/JHS_StatusComponent.h"
+
+#include "JHS_Weapon/JHS_WeaponStructures.h"
+
 AJHS_Enemy::AJHS_Enemy()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
+	//Create Component
+	MovementComp = CreateDefaultSubobject<UJHS_MovemetComponent>(TEXT("MovementComp"));
+	StateComp = CreateDefaultSubobject<UJHS_StateComponent>(TEXT("StateComp"));
+	StatusComp = CreateDefaultSubobject<UJHS_StatusComponent>(TEXT("StatusComp"));
+	////////////////////////////////////////////////////////////////
+
+	//Default Setting
+	GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -90), FRotator(0, -90, 0));
+	GetCharacterMovement()->RotationRate = FRotator(0, 720, 0);
+	////////////////////////////////////////////////////////////////
 }
 
-// Called when the game starts or when spawned
 void AJHS_Enemy::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	StateComp->OnStateTypeChanged.AddDynamic(this, &AJHS_Enemy::OnStateTypeChanged);
 }
 
-// Called every frame
 void AJHS_Enemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
-// Called to bind functionality to input
-void AJHS_Enemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void AJHS_Enemy::OnStateTypeChanged(EStateType InPrevType, EStateType InNewType)
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	switch (InNewType)
+	{
+	//case EStateType::Idle:
+		//break;
+	//case EStateType::Equip:
+		//break;
+	case EStateType::Hitted:
+		Hitted();
+		break;
+	case EStateType::Dead:
+		Dead();
+		break;
+	//case EStateType::MainAction:
+		//break;
+	case EStateType::Max:
+		break;
+	default:
+		break;
+	}
+}
+
+float AJHS_Enemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	bIsHit = true;
+
+	float damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	Damage.Power = damage;
+	Damage.Character = Cast<ACharacter>(EventInstigator->GetPawn());
+	Damage.Causer = DamageCauser;
+	Damage.Event = (FMainActionDamageEvent*)&DamageEvent;
+	
+	StateComp->SetHittedMode();
+	
+	return damage;
+}
+
+void AJHS_Enemy::Hitted()
+{
+	StatusComp->Damage(Damage.Power);
+	//Damage를 전달한 후 Damage.Power를 0으로 초기화
+	Damage.Power = 0;
+	
+	//DamageEvent와 HitData가 유효할때
+	if (!!Damage.Event && !!Damage.Event->HitData)
+	{
+		FHitData* data = Damage.Event->HitData;
+
+		data->PlayMontage(this);
+		data->PlayHitStop(GetWorld());
+		data->PlaySoundWave(this);
+		data->PlayEffect(GetWorld(), GetActorLocation(), GetActorRotation());
+
+		LaunchToEnemy();
+	}
+
+	//HP가 0 보다 작거나 같을때
+	if (StatusComp->IsDead())
+	{
+		//StateType을 DeadMode로 바꿈
+		StateComp->SetDeadMode();
+		return;
+	}
+
+	//Damage처리가 끝났으면 이후 들어올 DamageData를 위해 초기화 시킴
+	Damage.Character = nullptr;
+	Damage.Causer = nullptr;
+	Damage.Event = nullptr;
+}
+
+void AJHS_Enemy::Dead()
+{
+	bIsHit = false;
+
+	//죽었는때 또 충돌하면 안되므로 Collision Off
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	if (!!Montage)
+		PlayAnimMontage(Montage, PlayRate);
+
+	//TODO : Enemy Dead 후 일정확률로 잔상이 남음
+	//잔상 처리를 어떻게 할까 생각중
+	//1. 죽었을 때 그냥 충돌체 끄고, 물리적으로 멈추고, 머테리얼을 바꿈
+	//2. 죽엇을 때 mesh는 그대로 죽는 처리를 하고 mesh를 캡쳐해서 죽기 전에 모습을 남기고 머테리얼 변경
+
+	//1. 랜덤한 수를 구하고 임의의 일정한 확률을 설정함
+	const float Chance = FMath::RandRange(DeadPoseChance.X, DeadPoseChance.Y);
+	if (Chance >= 0.5f)
+	{
+		bIsChance = true;
+		CreateDeathPose();
+	}
+}
+
+void AJHS_Enemy::LaunchToEnemy()
+{
+	FHitData* data = Damage.Event->HitData;
+
+	if (StatusComp->IsDead() == false)
+	{
+		//현재 내 위치
+		FVector Start = GetActorLocation();
+		//현재 Target이 있는 위치
+		FVector Target = Damage.Character->GetActorLocation();
+		//나와 Target 사이의 거리, 방향
+		FVector Direction = Target - Start;
+		//정규화를 통해 방향만 남김
+		Direction.Normalize();
+
+		//Enemy입장에서 계산을 해야 하므로 앞방향으로 날리는게 아닌 뒤방향으로 날려야 함
+		LaunchCharacter((-Direction * data->Launch), false, false);
+		//날아간 후에 Enemy가 Target을 바라보게 함
+		SetActorRotation(UKismetMathLibrary::FindLookAtRotation(Start, Target));
+	}
+}
+
+void AJHS_Enemy::CreateDeathPose()
+{
+	//AActor로 죽는 순간의 동작을 저장할 객체를 만듬
+	AActor* DeathImage = GetWorld()->SpawnActor<AActor>(GetActorLocation(), GetActorRotation());
+	if (!DeathImage)
+		return;
+
+	//SkeletalMesh 생성 및 할당
+	UPoseableMeshComponent* PoseMesh = NewObject<UPoseableMeshComponent>(DeathImage);
+	if (!PoseMesh)
+		return;
+
+	//PoseMesh Setting
+	PoseMesh->RegisterComponent();
+	PoseMesh->AttachToComponent(DeathImage->GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
+	PoseMesh->SetSkeletalMesh(GetMesh()->SkeletalMesh);
+	PoseMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	PoseMesh->SetWorldLocation(this->GetActorLocation() + FVector(0, 0, -90));
+	PoseMesh->SetWorldRotation(this->GetActorRotation() + FRotator(0, -90, 0));
+
+	//Pose Copy
+	PoseMesh->CopyPoseFromSkeletalComponent(GetMesh());
+
+	//DeathPose가 자연스럽게 보이기 위해서 기준 Mesh가 사라지기 전까지 숨김처리
+	GetMesh()->SetVisibility(false);
+
+	//PoseMesh의 Material을 투명화 처리한 Material로 바꿈 (잔상 처럼 보이게)
+	//기존의 material을 동적으로 수정하지 않는 이유는 materald이 복잡하게 설정되어 있고
+	//투명화 처리를 할려면 오파시티를 활성화 시켜야 하는데 그러면 기존의 material이
+	//달라지기 때문의 기존 material을 수정하는 것보다 별도의 처리를 해준 material로
+	//교체하는 방식으로 구현
+
+	//ConstructorHelpers는 생성자 외부에서 사용하면 오류가 발생함
+	//그래서 staticloadobject를 사용
+	//static ConstructorHelpers::FObjectFinder<UMaterialInterface> MatIns(TEXT("/Script/Engine.Material'/Game/Characters/Mannequins/Materials/M_Mannequin_Test.M_Mannequin_Test_C'"));
+	//if (MatIns.Succeeded())
+	//{
+	//	//material 슬롯이 1개가 아닌 복수인 Mesh가 있을수 있으므로 반복문 돌림
+	//	for (int32 i = 0; i < PoseMesh->GetNumMaterials(); i++)
+	//	{
+	//		/
+	//		PoseMesh->SetMaterial(i, MatIns.Object);
+	//	}
+	//}
+
+	UMaterialInterface* MatDynamic = Cast<UMaterialInterface>(StaticLoadObject(UMaterialInterface::StaticClass(), nullptr, TEXT("/Script/Engine.Material'/Game/Characters/Mannequins/Materials/M_Mannequin_Test.M_Mannequin_Test'")));
+	if (MatDynamic)
+	{
+		//material 슬롯이 1개가 아닌 복수인 Mesh가 있을수 있으므로 반복문 돌림
+		for (int32 i = 0; i < PoseMesh->GetNumMaterials(); i++)
+		{
+			//각 material 슬롯에 투명 material을 설정
+			PoseMesh->SetMaterial(i, MatDynamic);
+		}
+	}
 
 }
 
+void AJHS_Enemy::End_Hitted()
+{
+	//Hitted 상태가 끝났으면 다시 Idle 상태로 다시 돌려줌
+	StateComp->SetIdleMode();
+}
+
+void AJHS_Enemy::End_Dead()
+{
+	if (bIsChance)
+	{
+		//SetLifeSpan(0.1f);
+		
+	}
+
+	GetMesh()->bPauseAnims = true;
+	SetLifeSpan(3.0f);
+}

@@ -25,6 +25,7 @@ public:
 	FORCEINLINE bool IsDeadMode() { return Type == EStateType::Dead; }
 	FORCEINLINE bool IsMainActionMode() { return Type == EStateType::MainAction; }
 
+	//단순하게 SkillAction이냐 아니냐만 따질 것 이므로 bool변수로 만듬
 	FORCEINLINE bool IsSkillActionMode() { return bIsSkillAction; }
 
 //Default Function
@@ -56,4 +57,5 @@ private:
 
 private:
 	bool bIsSkillAction;
+	bool bIsAttackDraw = true;
 };

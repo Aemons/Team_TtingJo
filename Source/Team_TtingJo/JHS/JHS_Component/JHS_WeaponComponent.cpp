@@ -8,6 +8,7 @@
 #include "JHS_Weapon/JHS_Attachment.h"
 #include "JHS_Weapon/JHS_Equipment.h"
 #include "JHS_Weapon/JHS_MainAction.h"
+#include "JHS_Weapon/JHS_SkillAction.h"
 
 //TODO : Player 구현 후 include 수정 예정 (JHS_WeaponComponent.cpp_4)
 #include "Team_TtingJo/Team_TtingJoCharacter.h"
@@ -39,7 +40,8 @@ void UJHS_WeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-
+	if (!!GetSkillAction())
+		GetSkillAction()->Tick(DeltaTime);
 }
 
 void UJHS_WeaponComponent::InitializeComponent()
@@ -97,6 +99,13 @@ UJHS_MainAction* UJHS_WeaponComponent::GetMainAction()
 
 	return DataAssets[(int32)Type]->GetMainAction();
 }
+UJHS_SkillAction* UJHS_WeaponComponent::GetSkillAction()
+{
+	CheckTrueResult(IsUnarmedMode(), nullptr);
+	CheckFalseResult(!!DataAssets[(int32)Type], nullptr);
+	
+	return DataAssets[(int32)Type]->GetSkillAction();
+}
 /////////////////////////////////////////////////////////////////
 
 bool UJHS_WeaponComponent::IsIdleMode()
@@ -126,9 +135,10 @@ void UJHS_WeaponComponent::MainAction()
 	//MainAction이 호출되면 타이머 리셋
 	GetWorld()->GetTimerManager().ClearTimer(TimeOutHandle);
 
-	//따로 무기를 장착하는 입력말고 좌클릭시 무기타입 여부를 따져서 무기장착
 	if (Type == EWeaponType::Max)
+	{
 		SetGreatSwordMode();
+	}
 
 	if (!!GetMainAction())
 		GetMainAction()->MainAction();
@@ -139,12 +149,14 @@ void UJHS_WeaponComponent::MainAction()
 
 void UJHS_WeaponComponent::SkillAction_Pressed()
 {
-
+	if (!!GetSkillAction())
+		GetSkillAction()->Pressed();
 }
 
 void UJHS_WeaponComponent::SkillAction_Relesed()
 {
-
+	if (!!GetSkillAction())
+		GetSkillAction()->Released();
 }
 
 void UJHS_WeaponComponent::SetMode(EWeaponType InType)

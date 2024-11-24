@@ -18,14 +18,14 @@ void UJHS_Equipment::BeginPlay(ACharacter* InOwner, const FEquipmentData& InData
 void UJHS_Equipment::Equip()
 {
 	StateComp->SetEquipMode();
-
+	
 	if (OnEquipmentEquip.IsBound())
 		OnEquipmentEquip.Broadcast();
 	
 	if (Data.bUseControllerRotation)
 		MovementComp->EnableControlRotation();
 
-	if (!!Data.Montage)
+	if (!!Data.Montage && StateComp->IsMainActionMode() == false)
 	{
 		OwnerCharacter->PlayAnimMontage(Data.Montage, Data.PlayRate);
 	}
@@ -63,3 +63,4 @@ void UJHS_Equipment::End_Equip()
 	if (OnEquipmentEndEquip.IsBound())
 		OnEquipmentEndEquip.Broadcast();
 }
+

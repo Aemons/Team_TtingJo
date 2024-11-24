@@ -21,16 +21,15 @@ class TEAM_TTINGJO_API UJHS_WeaponComponent : public UActorComponent
 public://Inline Function
 	FORCEINLINE EWeaponType GetWeaponType() { return Type; }
 
+	FORCEINLINE bool IsUnarmedMode() { return Type == EWeaponType::Max; }
+	FORCEINLINE bool IsGreatSword() { return Type == EWeaponType::GreatSword; }
+
 private:
 	UPROPERTY(EditAnywhere, Category = "DataAsset")
 	class UJHS_WeaponDataAsset* DataAssets[(int32)EWeaponType::Max];
 
 	UPROPERTY(EditAnywhere, Category = "WeaponChangeTime")
 	float TimeOut = 5.0f;
-
-public:
-	FORCEINLINE bool IsUnarmedMode() { return Type == EWeaponType::Max; }
-	FORCEINLINE bool IsGreatSword() { return Type == EWeaponType::GreatSword; }
 
 public://Property InputAction Value
 	//무기종류 추가시 InpuAction 추가
@@ -63,6 +62,7 @@ public://Get Weapon Classis
 	class AJHS_Attachment* GetAttachment();
 	class UJHS_Equipment* GetEquipment();
 	class UJHS_MainAction* GetMainAction();
+	class UJHS_SkillAction* GetSkillAction();
 
 public://Set WeaponType Mode Call Function
 	void SetUnarmedMode();
@@ -70,6 +70,7 @@ public://Set WeaponType Mode Call Function
 
 	void MainAction();
 
+	//SkillAction Input Function
 	void SkillAction_Pressed();
 	void SkillAction_Relesed();
 	

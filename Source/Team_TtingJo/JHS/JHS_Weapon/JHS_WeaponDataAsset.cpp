@@ -6,12 +6,16 @@
 #include "JHS_Weapon/JHS_Attachment.h"
 #include "JHS_Weapon/JHS_Equipment.h"
 #include "JHS_Weapon/JHS_MainAction.h"
+#include "JHS_Weapon/JHS_SkillAction.h"
 
 UJHS_WeaponDataAsset::UJHS_WeaponDataAsset()
 {
 	AttachmentClass = AJHS_Attachment::StaticClass();
 	EquipmentClass = UJHS_Equipment::StaticClass();
-	MainActionClass = UJHS_MainAction::StaticClass();
+
+	//MainActionClass는 Abstract이기 때문에 없으면 들어가면 안됨
+	//MainActionClass = UJHS_MainAction::StaticClass();
+	//SkillAction  또한 없으면 사용안하는 것이므로 기본값 할당 안함
 }
 
 void UJHS_WeaponDataAsset::BeginPlay(ACharacter* InOwner)
@@ -57,5 +61,11 @@ void UJHS_WeaponDataAsset::BeginPlay(ACharacter* InOwner)
 			Equipment->OnEquipmentBeginEquip.AddDynamic(MainAction, &UJHS_MainAction::OnBeginEquip);
 			Equipment->OnEquipmentUnequip.AddDynamic(MainAction, &UJHS_MainAction::OnUnequip);
 		}
+	}
+
+	if (!!SkillActionClass)
+	{
+		SkillAction = NewObject<UJHS_SkillAction>(this, SkillActionClass);
+		SkillAction->BeginPlay(InOwner, Attachment, MainAction);
 	}
 }

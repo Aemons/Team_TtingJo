@@ -16,6 +16,7 @@ public:
 	FORCEINLINE class AJHS_Attachment* GetAttachment() { return Attachment; }
 	FORCEINLINE class UJHS_Equipment* GetEquipment() { return Equipment; }
 	FORCEINLINE class UJHS_MainAction* GetMainAction() { return MainAction; }
+	FORCEINLINE class UJHS_SkillAction* GetSkillAction() { return SkillAction; }
 
 private://Weapon Class
 	UPROPERTY(EditAnywhere)
@@ -26,6 +27,9 @@ private://Weapon Class
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UJHS_MainAction> MainActionClass;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UJHS_SkillAction> SkillActionClass;
 
 private://Weapon Class Default Data Setting
 	UPROPERTY(EditAnywhere)
@@ -46,6 +50,9 @@ private://Weapon Class Object
 
 	UPROPERTY()
 	class UJHS_MainAction* MainAction;
+
+	UPROPERTY()
+	class UJHS_SkillAction* SkillAction;
 
 public:
 	UJHS_WeaponDataAsset();

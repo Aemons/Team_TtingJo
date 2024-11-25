@@ -127,11 +127,8 @@ void AJHS_Enemy::Dead()
 		PlayAnimMontage(Montage, PlayRate);
 
 	//TODO : Enemy Dead 후 일정확률로 잔상이 남음
-	//잔상 처리를 어떻게 할까 생각중
-	//1. 죽었을 때 그냥 충돌체 끄고, 물리적으로 멈추고, 머테리얼을 바꿈
-	//2. 죽엇을 때 mesh는 그대로 죽는 처리를 하고 mesh를 캡쳐해서 죽기 전에 모습을 남기고 머테리얼 변경
 
-	//1. 랜덤한 수를 구하고 임의의 일정한 확률을 설정함
+	//랜덤한 수를 구하고 임의의 일정한 확률을 설정함
 	const float Chance = FMath::RandRange(DeadPoseChance.X, DeadPoseChance.Y);
 	if (Chance >= 0.5f)
 	{
@@ -188,25 +185,8 @@ void AJHS_Enemy::CreateDeathPose()
 	//DeathPose가 자연스럽게 보이기 위해서 기준 Mesh가 사라지기 전까지 숨김처리
 	GetMesh()->SetVisibility(false);
 
+
 	//PoseMesh의 Material을 투명화 처리한 Material로 바꿈 (잔상 처럼 보이게)
-	//기존의 material을 동적으로 수정하지 않는 이유는 materald이 복잡하게 설정되어 있고
-	//투명화 처리를 할려면 오파시티를 활성화 시켜야 하는데 그러면 기존의 material이
-	//달라지기 때문의 기존 material을 수정하는 것보다 별도의 처리를 해준 material로
-	//교체하는 방식으로 구현
-
-	//ConstructorHelpers는 생성자 외부에서 사용하면 오류가 발생함
-	//그래서 staticloadobject를 사용
-	//static ConstructorHelpers::FObjectFinder<UMaterialInterface> MatIns(TEXT("/Script/Engine.Material'/Game/Characters/Mannequins/Materials/M_Mannequin_Test.M_Mannequin_Test_C'"));
-	//if (MatIns.Succeeded())
-	//{
-	//	//material 슬롯이 1개가 아닌 복수인 Mesh가 있을수 있으므로 반복문 돌림
-	//	for (int32 i = 0; i < PoseMesh->GetNumMaterials(); i++)
-	//	{
-	//		/
-	//		PoseMesh->SetMaterial(i, MatIns.Object);
-	//	}
-	//}
-
 	UMaterialInterface* MatDynamic = Cast<UMaterialInterface>(StaticLoadObject(UMaterialInterface::StaticClass(), nullptr, TEXT("/Script/Engine.Material'/Game/Characters/Mannequins/Materials/M_Mannequin_Test.M_Mannequin_Test'")));
 	if (MatDynamic)
 	{
@@ -217,8 +197,13 @@ void AJHS_Enemy::CreateDeathPose()
 			PoseMesh->SetMaterial(i, MatDynamic);
 		}
 	}
-
 }
+
+
+//기존의 material을 동적으로 수정하지 않는 이유는 materald이 복잡하게 설정되어 있고
+//투명화 처리를 할려면 오파시티를 활성화 시켜야 하는데 그러면 기존의 material이
+//달라지기 때문의 기존 material을 수정하는 것보다 별도의 처리를 해준 material로
+//교체하는 방식으로 구현
 
 void AJHS_Enemy::End_Hitted()
 {

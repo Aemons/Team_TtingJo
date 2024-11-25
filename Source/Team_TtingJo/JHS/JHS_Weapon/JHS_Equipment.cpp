@@ -17,19 +17,20 @@ void UJHS_Equipment::BeginPlay(ACharacter* InOwner, const FEquipmentData& InData
 
 void UJHS_Equipment::Equip()
 {
+	//Player 상태 변경
 	StateComp->SetEquipMode();
 	
 	if (OnEquipmentEquip.IsBound())
 		OnEquipmentEquip.Broadcast();
 	
+	//시점 정면 고정
 	if (Data.bUseControllerRotation)
 		MovementComp->EnableControlRotation();
 
+	//EquipMontage가 있음 + 현재 공격중이 아님
 	if (!!Data.Montage && StateComp->IsMainActionMode() == false)
-	{
 		OwnerCharacter->PlayAnimMontage(Data.Montage, Data.PlayRate);
-	}
-	else
+	else //EquipMontage가 없으면 바로 Equip
 	{
 		Begin_Equip();
 		End_Equip();
@@ -63,4 +64,3 @@ void UJHS_Equipment::End_Equip()
 	if (OnEquipmentEndEquip.IsBound())
 		OnEquipmentEndEquip.Broadcast();
 }
-

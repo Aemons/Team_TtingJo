@@ -5,10 +5,17 @@
 #include "Components/SceneComponent.h"
 #include "Components/ShapeComponent.h"
 
+//Attachment Class에서 WeaponType을 WeaponComponent에 알려주기 위해 임시로 사용
+//추후에 수정 및 삭제 예정
+#include "JHS_Component/JHS_WeaponComponent.h"
+
 AJHS_Attachment::AJHS_Attachment()
 {
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 	SetRootComponent(Root);
+
+	WeaponComp = CreateDefaultSubobject<UJHS_WeaponComponent>(TEXT("WeaponComp"));
+
 }
 
 void AJHS_Attachment::BeginPlay()
@@ -34,6 +41,9 @@ void AJHS_Attachment::BeginPlay()
 	OffCollision();
 
 	Super::BeginPlay();
+
+	WeaponComp->SetWeaponType(WeaponType);
+	
 }
 
 void AJHS_Attachment::AttachTo(FName InSocketName)

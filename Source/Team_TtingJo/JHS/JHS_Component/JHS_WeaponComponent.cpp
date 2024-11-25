@@ -135,16 +135,24 @@ void UJHS_WeaponComponent::MainAction()
 	//MainAction이 호출되면 타이머 리셋
 	GetWorld()->GetTimerManager().ClearTimer(TimeOutHandle);
 
+	JHS_Global::PRINT(("Type : %d", (int32)Type));
+
+	//무기가 장착상태가 아니면 바로 장착후 공격하기 위해
 	if (Type == EWeaponType::Max)
 	{
+		//장착무기의 Type에 따라 Mode가 바뀌면서 장착되어야 함
+		//지금 상태는 무기를 정하고 장착하는 상태임
 		SetGreatSwordMode();
+		//SetMode(Type); 터짐
 	}
+	///////////////////////////////////////////////////
 
+	//MainAction 실행
 	if (!!GetMainAction())
 		GetMainAction()->MainAction();
 
 	//일정시간 동안 입력이 없으면 SetUnarmedMode 호출
-	GetWorld()->GetTimerManager().SetTimer(TimeOutHandle, this, &UJHS_WeaponComponent::SetUnarmedMode, TimeOut, false);
+	GetWorld()->GetTimerManager().SetTimer(TimeOutHandle, this, &UJHS_WeaponComponent::SetUnarmedMode, ChangeTimeOut, false);
 }
 
 void UJHS_WeaponComponent::SkillAction_Pressed()
@@ -157,6 +165,11 @@ void UJHS_WeaponComponent::SkillAction_Relesed()
 {
 	if (!!GetSkillAction())
 		GetSkillAction()->Released();
+}
+
+void UJHS_WeaponComponent::SetWeaponType(EWeaponType InType)
+{
+	Type = InType;
 }
 
 void UJHS_WeaponComponent::SetMode(EWeaponType InType)

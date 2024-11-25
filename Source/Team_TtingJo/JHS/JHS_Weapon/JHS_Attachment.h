@@ -2,9 +2,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+
+#include "JHS_Component/JHS_WeaponComponent.h"
+
 #include "JHS_Attachment.generated.h"
 
-//Attachment Class
+
 
 //Event to be Called by NotifyState
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAttachmentBeginCollision);
@@ -21,6 +24,9 @@ class TEAM_TTINGJO_API AJHS_Attachment : public AActor
 {
 	GENERATED_BODY()
 	
+public:
+	FORCEINLINE EWeaponType GetAttachWeaponType() const { return WeaponType; }
+
 protected://Root Component
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class USceneComponent* Root;
@@ -31,6 +37,11 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Collision")
 	TArray<class UShapeComponent*> Collisions;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WeaponType")
+	EWeaponType WeaponType = EWeaponType::Max;
+
+	class UJHS_WeaponComponent* WeaponComp;
 
 //Default Function
 public:	

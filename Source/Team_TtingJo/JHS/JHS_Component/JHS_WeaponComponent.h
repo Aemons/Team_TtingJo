@@ -29,7 +29,7 @@ private:
 	class UJHS_WeaponDataAsset* DataAssets[(int32)EWeaponType::Max];
 
 	UPROPERTY(EditAnywhere, Category = "WeaponChangeTime")
-	float TimeOut = 5.0f;
+	float ChangeTimeOut = 5.0f;
 
 public://Property InputAction Value
 	//무기종류 추가시 InpuAction 추가
@@ -73,6 +73,10 @@ public://Set WeaponType Mode Call Function
 	//SkillAction Input Function
 	void SkillAction_Pressed();
 	void SkillAction_Relesed();
+
+	//AttachmentClass에서 WeaponType을 설정하고 WeaponComponent에서 사용하기 위한 함수
+	//일단 주먹구구식으로 만들고 나중에 인터페이스를 사용하던 델리게이트를 사용하던 구조수정해야함, 해당 함수를 Attachment에서 사용하면 지금까지 만들어놓은 구조가 망가짐
+	void SetWeaponType(EWeaponType InType);
 	
 private:
 	//현재 상태가 IdelMode 인지 확인하는 함수
@@ -89,7 +93,7 @@ public://Delegate Value
 
 private://Class Member Value
 	ACharacter* OwnerCharacter;
-	EWeaponType Type = EWeaponType::Max;
 	FTimerHandle TimeOutHandle;
+	EWeaponType Type = EWeaponType::Max;
 		
 };

@@ -26,7 +26,7 @@ ATeam_TtingJoCharacter::ATeam_TtingJoCharacter()
 	WeaponComp = CreateDefaultSubobject<UJHS_WeaponComponent>(TEXT("WeaponComponent"));
 	StateComp = CreateDefaultSubobject<UJHS_StateComponent>(TEXT("StateComponent"));
 	MovementComp = CreateDefaultSubobject<UJHS_MovemetComponent>(TEXT("MovementComponent"));
-	
+
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 		
@@ -97,7 +97,6 @@ void ATeam_TtingJoCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ATeam_TtingJoCharacter::Look);
 
-
 		//TODO : 회피는 일단 보류 일단 나중에 수정 및 보완
 		// 지금은 회피시 Montage는 나오는데 키를 때면 바로 멈춤
 		// 키를 떄도 회피키를 누르면 일정거리 만큼은 이동, 연속 회피 로직 수정 및 추가예정
@@ -162,7 +161,6 @@ void ATeam_TtingJoCharacter::OnRunnimg()
 		bIsRunning = true;
 		MovementComp->OnRun();
 	}
-
 }
 
 void ATeam_TtingJoCharacter::OffRunning()

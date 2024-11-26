@@ -33,7 +33,6 @@ void UJHS_WeaponComponent::BeginPlay()
 		if (!!DataAssets[i])
 			DataAssets[i]->BeginPlay(OwnerCharacter);
 	}
-
 }
 
 void UJHS_WeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -42,6 +41,8 @@ void UJHS_WeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 
 	if (!!GetSkillAction())
 		GetSkillAction()->Tick(DeltaTime);
+
+
 }
 
 void UJHS_WeaponComponent::InitializeComponent()
@@ -132,60 +133,67 @@ void UJHS_WeaponComponent::SetGreatSwordMode()
 
 void UJHS_WeaponComponent::MainAction()
 {
-	//MainAction이 호출되면 타이머 리셋
-	GetWorld()->GetTimerManager().ClearTimer(TimeOutHandle);
-
-	JHS_Global::PRINT(("Type : %d", (int32)Type));
 
 	//무기가 장착상태가 아니면 바로 장착후 공격하기 위해
 	if (Type == EWeaponType::Max)
 	{
 		//장착무기의 Type에 따라 Mode가 바뀌면서 장착되어야 함
 		//지금 상태는 무기를 정하고 장착하는 상태임
-		SetGreatSwordMode();
-		//SetMode(Type); 터짐
+		//SetGreatSwordMode();
+
+		//Player에서 설정한 WeaponType을 WeponComponent의 Type으로 할당
+		//할당한 Type을 바로 SetMode에 넣어줘서 Mode를 바꿈
+		PlayerWeaponType(Type);
+		SetMode(Type);
 	}
 	///////////////////////////////////////////////////
 
 	//MainAction 실행
 	if (!!GetMainAction())
+	{
 		GetMainAction()->MainAction();
-
-	//일정시간 동안 입력이 없으면 SetUnarmedMode 호출
-	GetWorld()->GetTimerManager().SetTimer(TimeOutHandle, this, &UJHS_WeaponComponent::SetUnarmedMode, ChangeTimeOut, false);
+		ResetUnarmedTimer();
+	}
 }
 
 void UJHS_WeaponComponent::SkillAction_Pressed()
 {
 	if (!!GetSkillAction())
+	{
 		GetSkillAction()->Pressed();
+		ResetUnarmedTimer();
+	}
 }
 
 void UJHS_WeaponComponent::SkillAction_Relesed()
 {
 	if (!!GetSkillAction())
+	{
 		GetSkillAction()->Released();
-}
-
-void UJHS_WeaponComponent::SetWeaponType(EWeaponType InType)
-{
-	Type = InType;
+		ResetUnarmedTimer();
+	}
 }
 
 void UJHS_WeaponComponent::SetMode(EWeaponType InType)
 {
+	//Player에서 미리 WeaponType을 설정하고 SetMode에 매개변수로 넣는 방식이면 
+	//기존의 방식은 Type == InType이 True이기 때문에 계속 Unarmed가 되는 상황이 생김
+	//그래서 지금의 방식이면 해당 구문이 의미가 없기 때문에 주석처리 함
+	//어차피 MainAction에서 WeaponTimeOut만큼의 시간이 지난후 SetUnarmedMode 호출해줌
+
 	//현재 Type과 InType이 같으면
-	if (Type == InType)
+	/*if (Type == InType)
 	{
 		//무기 장착 해제
 		SetUnarmedMode();
 		
 		return;
 	}
-	else if (IsUnarmedMode() == false)
+	if (IsUnarmedMode() == false)
 	{
 		GetEquipment()->Unequip();
 	}
+	*/
 
 	if (!!DataAssets[(int32)InType])
 	{
@@ -202,4 +210,23 @@ void UJHS_WeaponComponent::ChangeType(EWeaponType InType)
 	if (OnWeaponTypeChanged.IsBound())
 		OnWeaponTypeChanged.Broadcast(PrevType, InType);
 }
+
+void UJHS_WeaponComponent::PlayerWeaponType(EWeaponType InType)
+{
+	if (ATeam_TtingJoCharacter* Player = Cast<ATeam_TtingJoCharacter>(OwnerCharacter))
+	{
+		Type = Player->GetPlayerWeaponType();
+	}
+}
+
+//Timer Function
+////////////////////////////////////////////////////////////////////////////
+void UJHS_WeaponComponent::ResetUnarmedTimer()
+{
+	//함수 호출시 시간 초기화
+	GetWorld()->GetTimerManager().ClearTimer(TimeOutHandle);
+	//초기화와 동시에 Timer 진행
+	GetWorld()->GetTimerManager().SetTimer(TimeOutHandle, this, &UJHS_WeaponComponent::SetUnarmedMode, ChangeTimeOut, false);
+}
+////////////////////////////////////////////////////////////////////////////
 

@@ -5,6 +5,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
+
+#include "JHS_Component/JHS_WeaponComponent.h"
+
 #include "Team_TtingJoCharacter.generated.h"
 
 class USpringArmComponent;
@@ -29,6 +32,8 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
+	FORCEINLINE EWeaponType GetPlayerWeaponType() { return WeaponType; }
+
 public:
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -38,6 +43,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
 	
+public://InputAction Value
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
@@ -58,9 +64,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* RunAction;
 
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WeaponType")
+	EWeaponType WeaponType = EWeaponType::Max;
+
 //Set JHS Component
 public:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ActorComponent", meta = (DisplayPriority = "1"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ActorComponent", meta = (DisplayPriority = "1"))
 	class UJHS_WeaponComponent* WeaponComp;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ActorComponent", meta = (DisplayPriority = "2"))
@@ -74,6 +84,13 @@ public:
 	ATeam_TtingJoCharacter();
 	
 protected:
+	// To add mapping context
+	virtual void BeginPlay();
+
+	// APawn interface
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
+protected:
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
 
@@ -82,14 +99,6 @@ protected:
 	
 	void OnRunnimg();
 	void OffRunning();
-
-protected:
-	// APawn interface
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	
-	// To add mapping context
-	virtual void BeginPlay();
-
 public:
 	FInputBindDelegate OnInputBindDelegate;
 

@@ -3,11 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 
-#include "JHS_Component/JHS_WeaponComponent.h"
-
 #include "JHS_Attachment.generated.h"
-
-
 
 //Event to be Called by NotifyState
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAttachmentBeginCollision);
@@ -19,13 +15,17 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAttachmentEndCollision);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FAttachmentBeginOverlap, class ACharacter*, InAttacker, AActor*, InAttackCuaser, class ACharacter*, InOther);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FAttachmentEndOverlap, class ACharacter*, InAttacker, class ACharacter*, InOther);
 
+//WeaponType Setting Delegate
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAttachWeaponType, EWeaponType, InAttachType);
+
 UCLASS()
-class TEAM_TTINGJO_API AJHS_Attachment : public AActor
+class TEAM_TTINGJO_API AJHS_Attachment 
+	: public AActor
 {
 	GENERATED_BODY()
-	
+
 public:
-	FORCEINLINE EWeaponType GetAttachWeaponType() const { return WeaponType; }
+	FORCEINLINE bool GetHide() { return bIsHide; }
 
 protected://Root Component
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
@@ -37,11 +37,6 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Collision")
 	TArray<class UShapeComponent*> Collisions;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WeaponType")
-	EWeaponType WeaponType = EWeaponType::Max;
-
-	class UJHS_WeaponComponent* WeaponComp;
 
 //Default Function
 public:	
@@ -91,4 +86,9 @@ public://Delegate Value
 	FAttachmentBeginOverlap OnAttachmentBeginOverlap;
 	FAttachmentEndOverlap OnAttachmentEndOverlap;
 
+	//AttachWeaponType Delegate Value
+	FAttachWeaponType OnAttachWeaponType;
+
+private:
+	bool bIsHide;
 };

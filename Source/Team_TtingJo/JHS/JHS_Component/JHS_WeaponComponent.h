@@ -2,6 +2,11 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+
+//Attachment에서 WeaponType을 설정해주고 해당 WeaponType을 WeaponComponent에 알려주기 위해서 사용
+//지금은 일단 임시로 이렇게 사용하고 추후에 리팩토링 할때 전체적으로 개편할 예정
+//#include "JHS_Weapon/JHS_Attachment.h"
+
 #include "JHS_WeaponComponent.generated.h"
 
 UENUM(BlueprintType)
@@ -14,7 +19,8 @@ enum class EWeaponType : uint8
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FWeaponTypeChanged, EWeaponType, InPrevType, EWeaponType, InNewType);
 
 UCLASS()
-class TEAM_TTINGJO_API UJHS_WeaponComponent : public UActorComponent
+class TEAM_TTINGJO_API UJHS_WeaponComponent 
+	: public UActorComponent
 {
 	GENERATED_BODY()
 	
@@ -28,6 +34,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "DataAsset")
 	class UJHS_WeaponDataAsset* DataAssets[(int32)EWeaponType::Max];
 
+public:
 	UPROPERTY(EditAnywhere, Category = "WeaponChangeTime")
 	float ChangeTimeOut = 5.0f;
 
@@ -74,10 +81,6 @@ public://Set WeaponType Mode Call Function
 	void SkillAction_Pressed();
 	void SkillAction_Relesed();
 
-	//AttachmentClass에서 WeaponType을 설정하고 WeaponComponent에서 사용하기 위한 함수
-	//일단 주먹구구식으로 만들고 나중에 인터페이스를 사용하던 델리게이트를 사용하던 구조수정해야함, 해당 함수를 Attachment에서 사용하면 지금까지 만들어놓은 구조가 망가짐
-	void SetWeaponType(EWeaponType InType);
-	
 private:
 	//현재 상태가 IdelMode 인지 확인하는 함수
 	bool IsIdleMode();
@@ -88,12 +91,16 @@ private:
 	//다른 Class에 현재 WeaponType을 알려주는 함수
 	void ChangeType(EWeaponType InType);
 
+	void PlayerWeaponType(EWeaponType InType);
+	void ResetUnarmedTimer();
+
 public://Delegate Value
 	FWeaponTypeChanged OnWeaponTypeChanged;
 
 private://Class Member Value
 	ACharacter* OwnerCharacter;
 	FTimerHandle TimeOutHandle;
+
 	EWeaponType Type = EWeaponType::Max;
 		
 };

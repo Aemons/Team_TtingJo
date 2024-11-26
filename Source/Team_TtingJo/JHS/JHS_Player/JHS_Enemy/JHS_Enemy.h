@@ -31,6 +31,10 @@ public://Blueprint Check
 	UPROPERTY(EditAnywhere, Category = "Dead Montage")
 	FVector2D DeadPoseChance = FVector2D(0.0, 1.0);
 
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Component")
+	class UPoseableMeshComponent* PoseComp;
+
 private:
 	UPROPERTY(VisibleDefaultsOnly)
 	class UJHS_WeaponComponent* WeaponComp;

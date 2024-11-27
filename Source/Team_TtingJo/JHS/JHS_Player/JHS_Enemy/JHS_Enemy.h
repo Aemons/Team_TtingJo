@@ -16,17 +16,11 @@ class TEAM_TTINGJO_API AJHS_Enemy
 	GENERATED_BODY()
 
 public://Blueprint Check
-	UPROPERTY(EditAnywhere, Category = "Damage")
-	float HittedDamage;
-
-	UPROPERTY(EditAnywhere, Category = "Damage")
-	bool bIsHit;
+	UPROPERTY(EditAnywhere, Category = "Dead Montage")
+	class UAnimMontage* DeadMontage;
 
 	UPROPERTY(EditAnywhere, Category = "Dead Montage")
-	class UAnimMontage* Montage;
-
-	UPROPERTY(EditAnywhere, Category = "Dead Montage")
-	float PlayRate = 1.0f;
+	float DeadPlayRate = 1.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Dead Montage")
 	FVector2D DeadPoseChance = FVector2D(0.0, 1.0);

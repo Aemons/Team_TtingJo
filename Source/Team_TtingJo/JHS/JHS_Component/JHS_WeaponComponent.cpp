@@ -121,6 +121,9 @@ void UJHS_WeaponComponent::SetUnarmedMode()
 
 	GetEquipment()->Unequip();
 
+	//TODO : 장착중인 무기를 해제한다
+	bHasWeapon = false;
+	
 	ChangeType(EWeaponType::Max);
 }
 
@@ -199,6 +202,8 @@ void UJHS_WeaponComponent::SetMode(EWeaponType InType)
 	{
 		DataAssets[(int32)InType]->GetEquipment()->Equip();
 		ChangeType(InType);
+		//TODO : 무기가 장착중이다 
+		bHasWeapon = true;
 	}
 }
 

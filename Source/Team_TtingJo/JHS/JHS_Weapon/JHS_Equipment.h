@@ -47,7 +47,7 @@ private:
 	FEquipmentData Data;
 
 	bool bBeginEquip;
-	bool bEquipped;
+	bool bEquipped = false;
 
 	class UJHS_StateComponent* StateComp;
 	class UJHS_MovemetComponent* MovementComp;

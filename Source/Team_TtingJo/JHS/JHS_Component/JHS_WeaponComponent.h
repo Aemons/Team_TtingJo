@@ -26,6 +26,7 @@ class TEAM_TTINGJO_API UJHS_WeaponComponent
 	
 public://Inline Function
 	FORCEINLINE EWeaponType GetWeaponType() { return Type; }
+	FORCEINLINE bool GetHasWaepon() { return bHasWeapon; }
 
 	FORCEINLINE bool IsUnarmedMode() { return Type == EWeaponType::Max; }
 	FORCEINLINE bool IsGreatSword() { return Type == EWeaponType::GreatSword; }
@@ -102,5 +103,5 @@ private://Class Member Value
 	FTimerHandle TimeOutHandle;
 
 	EWeaponType Type = EWeaponType::Max;
-		
+	bool bHasWeapon;
 };

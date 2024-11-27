@@ -64,6 +64,9 @@ public://InputAction Value
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* RunAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* DodgeAction;
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WeaponType")
 	EWeaponType WeaponType = EWeaponType::Max;
@@ -99,10 +102,16 @@ protected:
 	
 	void OnRunnimg();
 	void OffRunning();
+
+	//Dodge Function
+	void OnDodge();
+	void OffDodge();
+
 public:
 	FInputBindDelegate OnInputBindDelegate;
 
 private:
 	bool bIsRunning;
+	bool bIsDodge;
 };
 

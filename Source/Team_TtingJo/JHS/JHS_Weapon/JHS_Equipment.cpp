@@ -13,6 +13,8 @@ void UJHS_Equipment::BeginPlay(ACharacter* InOwner, const FEquipmentData& InData
 
 	StateComp = Cast<UJHS_StateComponent>(OwnerCharacter->GetComponentByClass(UJHS_StateComponent::StaticClass()));
 	MovementComp = Cast<UJHS_MovemetComponent>(OwnerCharacter->GetComponentByClass(UJHS_MovemetComponent::StaticClass()));
+
+	bEquipped = false;
 }
 
 void UJHS_Equipment::Equip()

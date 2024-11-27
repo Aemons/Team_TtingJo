@@ -1,6 +1,8 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "Team_TtingJoCharacter.h"
+#include "JHS_Global.h"
+
 #include "Engine/LocalPlayer.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -14,6 +16,8 @@
 #include "JHS_Component/JHS_WeaponComponent.h"
 #include "JHS_Component/JHS_StateComponent.h"
 #include "JHS_Component/JHS_MovemetComponent.h"
+
+#include "JHS_Weapon/JHS_Equipment.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -97,13 +101,17 @@ void ATeam_TtingJoCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ATeam_TtingJoCharacter::Look);
 
-		//TODO : 회피는 일단 보류 일단 나중에 수정 및 보완
-		// 지금은 회피시 Montage는 나오는데 키를 때면 바로 멈춤
-		// 키를 떄도 회피키를 누르면 일정거리 만큼은 이동, 연속 회피 로직 수정 및 추가예정
-		//Dodge
+		//Run
 		EnhancedInputComponent->BindAction(RunAction, ETriggerEvent::Started, this, &ATeam_TtingJoCharacter::OnRunnimg);
 		EnhancedInputComponent->BindAction(RunAction, ETriggerEvent::Completed, this, &ATeam_TtingJoCharacter::OffRunning);
 		EnhancedInputComponent->BindAction(RunAction, ETriggerEvent::Canceled, this, &ATeam_TtingJoCharacter::OffRunning);
+
+		//Dodge
+		EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Started, this, &ATeam_TtingJoCharacter::OnDodge);
+		EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Completed, this, &ATeam_TtingJoCharacter::OffDodge);
+		EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Canceled, this, &ATeam_TtingJoCharacter::OffDodge);
+
+
 
 		//WeaponComponent InputAction Delegate Bind
 		if (OnInputBindDelegate.IsBound())
@@ -170,4 +178,13 @@ void ATeam_TtingJoCharacter::OffRunning()
 		bIsRunning = false;
 		MovementComp->OnJog();
 	}
+}
+
+void ATeam_TtingJoCharacter::OnDodge()
+{
+	JHS_Global::PRINT(("Equipped : %s", WeaponComp->GetHasWaepon() ? TEXT("True" : TEXT("False"))));
+}
+
+void ATeam_TtingJoCharacter::OffDodge()
+{
 }

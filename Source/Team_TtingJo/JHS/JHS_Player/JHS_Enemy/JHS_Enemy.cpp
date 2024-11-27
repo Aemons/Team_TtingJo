@@ -78,8 +78,6 @@ void AJHS_Enemy::OnStateTypeChanged(EStateType InPrevType, EStateType InNewType)
 
 float AJHS_Enemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	bIsHit = true;
-
 	float damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
 	Damage.Power = damage;
@@ -127,13 +125,11 @@ void AJHS_Enemy::Hitted()
 
 void AJHS_Enemy::Dead()
 {
-	bIsHit = false;
-
 	//죽었는때 또 충돌하면 안되므로 Collision Off
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	if (!!Montage)
-		PlayAnimMontage(Montage, PlayRate);
+	if (!!DeadMontage)
+		PlayAnimMontage(DeadMontage, DeadPlayRate);
 
 	//TODO : Enemy Dead 후 일정확률로 잔상이 남음
 	//랜덤한 수를 구하고 임의의 일정한 확률을 설정함
@@ -172,8 +168,7 @@ void AJHS_Enemy::CreateDeathPose()
 {
 	//AActor로 죽는 순간의 동작을 저장할 객체를 만듬
 	AActor* DeathImage = GetWorld()->SpawnActor<AActor>(GetActorLocation(), GetActorRotation());
-	if (!DeathImage)
-		return;
+	CheckNull(DeathImage);
 
 	//SkeletalMesh 생성 및 할당
 	UPoseableMeshComponent* PoseMesh = NewObject<UPoseableMeshComponent>(DeathImage);
@@ -215,11 +210,10 @@ void AJHS_Enemy::CreateDeathPose()
 		}
 	}
 
-
 	//PoseMesh는 NewObject로 생성했으니까 Destroy할떄 nullptr 해줘야 함
+	//해당 구문은 Player에서 신호가 들어오면 작동하는 구문으로 변경예정
 	//PoseMesh->DestroyComponent();
 	//PoseMesh = nullptr;
-
 }
 
 
@@ -233,7 +227,7 @@ void AJHS_Enemy::End_Dead()
 {
 	if (bIsChance == true)
 	{
-
+		//Echo 출력후 추가 적인 설정
 	}
 	else
 	{

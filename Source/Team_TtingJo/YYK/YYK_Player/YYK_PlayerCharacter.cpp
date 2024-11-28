@@ -4,8 +4,9 @@
 #include "YYK_PlayerCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Team_TtingJo/YYK/YYK_Component/YYK_PlayerMoveComponent.h"
+#include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "InputActionValue.h"
 
 // Sets default values
 AYYK_PlayerCharacter::AYYK_PlayerCharacter()
@@ -15,17 +16,30 @@ AYYK_PlayerCharacter::AYYK_PlayerCharacter()
 
 	springArmComp=CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
 	springArmComp->SetupAttachment(RootComponent);
+	springArmComp->bUsePawnControlRotation=true;
 
 	cameraComp=CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	cameraComp->SetupAttachment(springArmComp);
+	cameraComp->bUsePawnControlRotation=false;
 
-	playerMove=CreateDefaultSubobject<UYYK_PlayerMoveComponent>(TEXT("PlayerMoveComponent"));
+	bUseControllerRotationYaw=true;
+	
 }
 
 // Called when the game starts or when spawned
 void AYYK_PlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	auto pc=Cast<APlayerController>(Controller);
+	if(pc)
+	{
+		auto subsystem=ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(pc->GetLocalPlayer());
+		if(subsystem)
+		{
+			subsystem->AddMappingContext(imc_main,0);
+		}
+	}
 	
 }
 
@@ -34,18 +48,49 @@ void AYYK_PlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// 플레이어 이동 처리 : 등속 운동 - P(결과 위치)=P0(현재 위치)+v(속도)*t(시간)
+	direction=FTransform(GetControlRotation()).TransformVector(direction);
+	AddMovementInput(direction);
+	direction=FVector::ZeroVector;
 }
 
 // Called to bind functionality to input
 void AYYK_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-	auto playerInput=CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
+	auto playerInput = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
 	if(playerInput)
 	{
-		// 컴포넌트에서 입력 바인딩 처리하도록 호출
-		playerMove->SetupInputBinding(playerInput);
+		playerInput->BindAction(ia_Turn, ETriggerEvent::Triggered, this, &AYYK_PlayerCharacter::Turn);
+		playerInput->BindAction(ia_Lookup, ETriggerEvent::Triggered, this, &AYYK_PlayerCharacter::LookUp);
+		playerInput->BindAction(ia_Move, ETriggerEvent::Triggered, this, &AYYK_PlayerCharacter::Move);
+		playerInput->BindAction(ia_Jump, ETriggerEvent::Started, this, &AYYK_PlayerCharacter::Jump);
 	}
+}
+
+void AYYK_PlayerCharacter::Turn(const struct FInputActionValue& inputValue)
+{
+	float value = inputValue.Get<float>();
+	AddControllerYawInput(value);
+}
+
+void AYYK_PlayerCharacter::LookUp(const struct FInputActionValue& inputValue)
+{
+	float value = inputValue.Get<float>();
+	AddControllerPitchInput(value);
+}
+
+void AYYK_PlayerCharacter::Move(const struct FInputActionValue& inputValue)
+{
+	FVector2D value = inputValue.Get<FVector2D>();
+	// 상하 입력 이벤트 처리
+	direction.X=value.X;
+	// 좌우 입력 이벤트 처리
+	direction.Y=value.Y;
+}
+
+void AYYK_PlayerCharacter::InputJump(const struct FInputActionValue& inputValue)
+{
+	Jump();
 }
 

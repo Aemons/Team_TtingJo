@@ -2,6 +2,7 @@
 
 
 #include "YYK_PlayerCharacter.h"
+#include "YYK_CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -9,7 +10,8 @@
 #include "InputActionValue.h"
 
 // Sets default values
-AYYK_PlayerCharacter::AYYK_PlayerCharacter()
+AYYK_PlayerCharacter::AYYK_PlayerCharacter(const FObjectInitializer& ObjectInitializer)
+	:Super(ObjectInitializer.SetDefaultSubobjectClass<UYYK_CharacterMovementComponent>(AYYK_PlayerCharacter::CharacterMovementComponentName))
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -22,8 +24,9 @@ AYYK_PlayerCharacter::AYYK_PlayerCharacter()
 	cameraComp->SetupAttachment(springArmComp);
 	cameraComp->bUsePawnControlRotation=false;
 
+	yykMovementComp = Cast<UYYK_CharacterMovementComponent>(GetCharacterMovement());
+
 	bUseControllerRotationYaw=true;
-	
 }
 
 // Called when the game starts or when spawned
@@ -64,7 +67,8 @@ void AYYK_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		playerInput->BindAction(ia_Turn, ETriggerEvent::Triggered, this, &AYYK_PlayerCharacter::Turn);
 		playerInput->BindAction(ia_Lookup, ETriggerEvent::Triggered, this, &AYYK_PlayerCharacter::LookUp);
 		playerInput->BindAction(ia_Move, ETriggerEvent::Triggered, this, &AYYK_PlayerCharacter::Move);
-		playerInput->BindAction(ia_Jump, ETriggerEvent::Started, this, &AYYK_PlayerCharacter::Jump);
+		playerInput->BindAction(ia_Jump, ETriggerEvent::Started, this, &AYYK_PlayerCharacter::InputJump);
+		playerInput->BindAction(ia_Climb, ETriggerEvent::Started, this, &AYYK_PlayerCharacter::ClimbStart);
 	}
 }
 
@@ -94,3 +98,19 @@ void AYYK_PlayerCharacter::InputJump(const struct FInputActionValue& inputValue)
 	Jump();
 }
 
+void AYYK_PlayerCharacter::ClimbStart(const FInputActionValue& inputValue)
+{
+}
+
+//bool AYYK_PlayerCharacter::ClimbLineTracing(FHitResult& hitOut)
+//{
+//	FVector start=GetActorLocation();
+//	FVector end=start+GetActorForwardVector()*2000.f;
+//	
+//	FCollisionQueryParams traceParams;
+//	bool bHit = GetWorld()->LineTraceSingleByChannel(hitOut, start, end, ECC_Visibility, traceParams);
+//	
+//	DrawDebugLine(GetWorld(), start, end, FColor::Cyan,true,10.f);
+//		
+//	return bHit;
+//}

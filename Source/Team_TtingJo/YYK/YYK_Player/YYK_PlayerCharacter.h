@@ -3,8 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InputActionValue.h"
 #include "GameFramework/Character.h"
 #include "YYK_PlayerCharacter.generated.h"
+
+class UYYK_CharacterMovementComponent;
 
 UCLASS()
 class TEAM_TTINGJO_API AYYK_PlayerCharacter : public ACharacter
@@ -17,6 +20,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	TObjectPtr<class UCameraComponent> cameraComp;
+
+	UPROPERTY(VisibleAnywhere, Category = Movement)
+	UYYK_CharacterMovementComponent* yykMovementComp;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	class UInputMappingContext* imc_main;
@@ -33,9 +39,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	class UInputAction* ia_Jump;
 	
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+    class UInputAction* ia_Climb;
+	
 public:
 	// Sets default values for this character's properties
-	AYYK_PlayerCharacter();
+	AYYK_PlayerCharacter(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	// Called when the game starts or when spawned
@@ -58,6 +67,8 @@ public:
 	void Move(const struct FInputActionValue& inputValue);
 
 	void InputJump(const struct FInputActionValue& inputValue);
+
+	void ClimbStart(const struct FInputActionValue& inputValue);
 
 public:
 	UPROPERTY(EditDefaultsOnly, Category = PlayerSetting)

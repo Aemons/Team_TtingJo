@@ -44,6 +44,7 @@ void UJHS_MovemetComponent::Stop()
 	bCanMove = false;
 }
 
+
 void UJHS_MovemetComponent::EnableControlRotation()
 {
 	OwnerCharacter->bUseControllerRotationYaw = true;

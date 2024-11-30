@@ -8,7 +8,7 @@
 UENUM()
 enum class EStateType : uint8
 {
-	Idle = 0, Equip, Hitted, Dead, MainAction, Max
+	Idle = 0, Equip, Hitted, Dead, MainAction, Dodge, Max
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FStateTypeChanged, EStateType, InPrevType, EStateType, InNewType);
@@ -24,6 +24,7 @@ public:
 	FORCEINLINE bool IsHittedMode() { return Type == EStateType::Hitted; }
 	FORCEINLINE bool IsDeadMode() { return Type == EStateType::Dead; }
 	FORCEINLINE bool IsMainActionMode() { return Type == EStateType::MainAction; }
+	FORCEINLINE bool IsDodgeMode() { return Type == EStateType::Dodge; }
 
 	//단순하게 SkillAction이냐 아니냐만 따질 것 이므로 bool변수로 만듬
 	FORCEINLINE bool IsSkillActionMode() { return bIsSkillAction; }
@@ -42,6 +43,7 @@ public://Mode Changed Function
 	void SetHittedMode();
 	void SetDeadMode();
 	void SetMainActionMode();
+	void SetDodgeMode();
 
 	void OnSkillActionMode();
 	void OffSkillActionMode();
@@ -56,6 +58,6 @@ private:
 	EStateType Type;
 
 private:
-	bool bIsSkillAction;
-	bool bIsAttackDraw = true;
+	bool bIsSkillAction = false;
+
 };

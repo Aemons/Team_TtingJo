@@ -33,6 +33,8 @@ public:
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 	FORCEINLINE EWeaponType GetPlayerWeaponType() { return WeaponType; }
+	FORCEINLINE bool GetDodge() { return bIsDodge; }
+	FORCEINLINE FVector2D GetMovementInput() { return MovementInputVector; }
 
 public:
 	/** Camera boom positioning the camera behind the character */
@@ -100,8 +102,13 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 	
-	void OnRunnimg();
-	void OffRunning();
+	//Jump Function
+	void OnJump();
+	void OffJump();
+
+	//Run FunctionS
+	void OnRun();
+	void OffRun();
 
 	//Dodge Function
 	void OnDodge();
@@ -111,7 +118,11 @@ public:
 	FInputBindDelegate OnInputBindDelegate;
 
 private:
-	bool bIsRunning;
-	bool bIsDodge;
+	bool bIsRunning = false;
+	bool bIsDodge = false;
+
+	FVector2D MovementInputVector = FVector2D::ZeroVector;
+
+	FTimerHandle DodgeHandle;
 };
 

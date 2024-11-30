@@ -25,6 +25,9 @@
 #define LOG_LINE() { JHS_Global::LOG(__FILE__, __FUNCTION__, __LINE__); }
 #define PRINT_LINE() { JHS_Global::PRINT_LINE_FUNC(FString(__FILE__), FString(__FUNCTION__), __LINE__); }
 
+//PRINT 함수에서 가변인자 사용시 InValue에 적용해서 사용
+#define VALUE_STRING(x, y) {FString::Printf(TEXT(x), y)}
+
 class TEAM_TTINGJO_API JHS_Global
 {
 public:
@@ -38,12 +41,13 @@ public:
 
 	//Custom Display Print Log Funtion
 	//InValue = int32, InColor = 색, InKey = 순서, InDuration = 표시시간
-	static void PRINT(int32 InValue, FColor InColor = FColor::Red, int32 InKey = -1, float InDuration = 5);
+	static void PRINT(int32 InValue, int32 InKey = -1, FColor InColor = FColor::Red, float InDuration = 5);
 	//InValue = float, InColor = 색, InKey = 순서, InDuration = 표시시간
-	static void PRINT(float InValue, FColor InColor = FColor::Red, int32 InKey = -1, float InDuration = 5);
-	//InValue = TEXT("내용"), InColor = 색, InKey = 순서, InDuration = 표시시간
-	static void PRINT(const FString& InValue, FColor InColor = FColor::Red, int32 InKey = -1, float InDuration = 5);
+	static void PRINT(float InValue, int32 InKey = -1, FColor InColor = FColor::Red, float InDuration = 5);
+
+	//InValue = "내용", InColor = 색, InKey = 순서, InDuration = 표시시간
+	static void PRINT(const FString& InValue, int32 InKey = -1, FColor InColor = FColor::Red, float InDuration = 5);
 
 	//Macro Call Function
-	static void PRINT_LINE_FUNC(const FString& InFile, const FString& InFunc, int32 InLine, FColor InColor = FColor::Yellow, int32 InKey = -1, float InDuration = 5);
+	static void PRINT_LINE_FUNC(const FString& InFile, const FString& InFunc, int32 InLine, FColor InColor = FColor::Yellow, int32 InKey = 0, float InDuration = 5);
 };

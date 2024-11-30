@@ -18,20 +18,21 @@ void JHS_Global::LOG(const FString& InValue)
 	UE_LOG(GP, Display, L"%s", *InValue);
 }
 
-void JHS_Global::PRINT(int32 InValue, FColor InColor, int32 InKey, float InDuration)
+void JHS_Global::PRINT(int32 InValue, int32 InKey, FColor InColor,float InDuration)
 {
 	GEngine->AddOnScreenDebugMessage(InKey, InDuration, InColor, FString::FromInt(InValue));
 }
 
-void JHS_Global::PRINT(float InValue, FColor InColor, int32 InKey, float InDuration)
+void JHS_Global::PRINT(float InValue, int32 InKey, FColor InColor, float InDuration)
 {
 	GEngine->AddOnScreenDebugMessage(InKey, InDuration, InColor, FString::SanitizeFloat(InValue));
 }
 
-void JHS_Global::PRINT(const FString& InValue, FColor InColor, int32 InKey, float InDuration)
+void JHS_Global::PRINT(const FString& InValue, int32 InKey, FColor InColor, float InDuration)
 {
 	GEngine->AddOnScreenDebugMessage(InKey, InDuration, InColor, InValue);
 }
+
 
 void JHS_Global::PRINT_LINE_FUNC(const FString& InFile, const FString& InFunc, int32 InLine, FColor InColor, int32 InKey, float InDuration)
 {

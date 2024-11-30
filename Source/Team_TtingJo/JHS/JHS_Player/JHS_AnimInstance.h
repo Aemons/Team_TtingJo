@@ -22,6 +22,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PlayerData")
 	float Direction;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PlayerData")
+	float ForwardInput;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PlayerData")
+	float RightInput;
+
 protected://Bool Value
 	//Player가 움직이고 있는지
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CheckValue")
@@ -37,10 +43,11 @@ protected://Bool Value
 
 	//Player가 회피명령을 줫는지
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CheckValue")
-	bool bIsWeaponDodge;
+	bool bIsDodge;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CheckValue")
-	class ACharacter* OwnerCharacter;
+	//class ACharacter* OwnerCharacter;
+	class ATeam_TtingJoCharacter* OwnerCharacter;
 
 public:
 	void NativeBeginPlay() override;
@@ -49,6 +56,9 @@ public:
 private:
 	void PlayerSpeed();
 	void PlayerDirection();
+	void PlayerDodge();
+	void PlayerInput();
+
 	void ShouldMove();
 	void Falling();
 

@@ -180,6 +180,7 @@ void AJHS_Enemy::CreateDeathPose()
 	PoseComp->RegisterComponent();
 	PoseComp->AttachToComponent(DeathImage->GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
 	PoseComp->SetSkeletalMesh(GetMesh()->SkeletalMesh);
+	PoseComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	PoseComp->SetWorldLocation(this->GetActorLocation() + FVector(0, 0, -90));
 	PoseComp->SetWorldRotation(this->GetActorRotation() + FRotator(0, -90, 0));
 	////////////////////////////////////////////////////////////////////////////

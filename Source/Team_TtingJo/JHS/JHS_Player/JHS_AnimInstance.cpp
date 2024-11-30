@@ -30,6 +30,8 @@ void UJHS_AnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	//Player Data Function
 	PlayerSpeed();
 	PlayerDirection();
+	PlayerDodge();
+	PlayerInput();
 
 	//Player State Check Function
 	ShouldMove();
@@ -52,6 +54,24 @@ void UJHS_AnimInstance::PlayerDirection()
 	Direction = PrevRotation.Yaw;
 }
 
+void UJHS_AnimInstance::PlayerDodge()
+{
+	bIsDodge = OwnerCharacter->GetDodge();
+}
+
+void UJHS_AnimInstance::PlayerInput()
+{
+	//GetLastMovementInputVector를 사용하면 마지막 입력에 대한 값을
+	//받아 올수 있지만 키를 떄는 순간의 값도 받아와서 최종적으로 0을 받아옴
+	//그래서 값을 끝까지 받아올수 있게 Player에서 직접 할당한 값을 가져옴
+
+	//ForwardInput = OwnerCharacter->GetLastMovementInputVector().X;
+	//RightInput = OwnerCharacter->GetLastMovementInputVector().Y;
+
+	ForwardInput = OwnerCharacter->GetMovementInput().Y;
+	RightInput = OwnerCharacter->GetMovementInput().X;
+}
+
 void UJHS_AnimInstance::ShouldMove()
 {
 	FVector Accel = OwnerCharacter->GetCharacterMovement()->GetCurrentAcceleration();
@@ -60,7 +80,6 @@ void UJHS_AnimInstance::ShouldMove()
 		bShouldMove = true;
 	else
 		bShouldMove = false;
-
 }
 
 void UJHS_AnimInstance::Falling()

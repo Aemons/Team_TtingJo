@@ -35,6 +35,11 @@ void UJHS_StateComponent::SetMainActionMode()
 	ChangeType(EStateType::MainAction);
 }
 
+void UJHS_StateComponent::SetDodgeMode()
+{
+	ChangeType(EStateType::Dodge);
+}
+
 void UJHS_StateComponent::OnSkillActionMode()
 {
 	bIsSkillAction = true;

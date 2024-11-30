@@ -48,7 +48,6 @@ ATeam_TtingJoCharacter::ATeam_TtingJoCharacter()
 	GetCharacterMovement()->JumpZVelocity = 700.f;
 	GetCharacterMovement()->AirControl = 0.35f;
 	GetCharacterMovement()->MaxWalkSpeed = 500.f;
-	//////////////////////////
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
@@ -73,10 +72,9 @@ void ATeam_TtingJoCharacter::BeginPlay()
 	// Call the base class  
 	Super::BeginPlay();
 }
+///////////////////////////////////////////////////////////\
 
-//////////////////////////////////////////////////////////////////////////
 // Input
-
 void ATeam_TtingJoCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	// Add Input Mapping Context
@@ -91,27 +89,23 @@ void ATeam_TtingJoCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) 
 	{
-		// Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
-
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ATeam_TtingJoCharacter::Move);
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ATeam_TtingJoCharacter::Look);
 
+		// Jumping
+		EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Started, this, &ATeam_TtingJoCharacter::OnJump);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ATeam_TtingJoCharacter::OffJump);
+
 		//Run
-		EnhancedInputComponent->BindAction(RunAction, ETriggerEvent::Started, this, &ATeam_TtingJoCharacter::OnRunnimg);
-		EnhancedInputComponent->BindAction(RunAction, ETriggerEvent::Completed, this, &ATeam_TtingJoCharacter::OffRunning);
-		EnhancedInputComponent->BindAction(RunAction, ETriggerEvent::Canceled, this, &ATeam_TtingJoCharacter::OffRunning);
+		EnhancedInputComponent->BindAction(RunAction, ETriggerEvent::Started, this, &ATeam_TtingJoCharacter::OnRun);
+		EnhancedInputComponent->BindAction(RunAction, ETriggerEvent::Completed, this, &ATeam_TtingJoCharacter::OffRun);
+		EnhancedInputComponent->BindAction(RunAction, ETriggerEvent::Canceled, this, &ATeam_TtingJoCharacter::OffRun);
 
 		//Dodge
 		EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Started, this, &ATeam_TtingJoCharacter::OnDodge);
-		EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Completed, this, &ATeam_TtingJoCharacter::OffDodge);
-		EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Canceled, this, &ATeam_TtingJoCharacter::OffDodge);
-
-
 
 		//WeaponComponent InputAction Delegate Bind
 		if (OnInputBindDelegate.IsBound())
@@ -126,7 +120,8 @@ void ATeam_TtingJoCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 void ATeam_TtingJoCharacter::Move(const FInputActionValue& Value)
 {
 	// input is a Vector2D
-	FVector2D MovementVector = Value.Get<FVector2D>();
+	MovementInputVector = Value.Get<FVector2D>();
+	MovementInputVector.Normalize();
 
 	if (Controller != nullptr)
 	{
@@ -141,8 +136,11 @@ void ATeam_TtingJoCharacter::Move(const FInputActionValue& Value)
 		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
 		// add movement 
-		AddMovementInput(ForwardDirection, MovementVector.Y);
-		AddMovementInput(RightDirection, MovementVector.X);
+		if (bIsDodge == false)
+		{
+			AddMovementInput(ForwardDirection, MovementInputVector.Y);
+			AddMovementInput(RightDirection, MovementInputVector.X);
+		}
 	}
 }
 
@@ -159,11 +157,22 @@ void ATeam_TtingJoCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
-void ATeam_TtingJoCharacter::OnRunnimg()
+void ATeam_TtingJoCharacter::OnJump()
+{
+	if (WeaponComp->GetHasWaepon() == false)
+		Jump();
+}
+
+void ATeam_TtingJoCharacter::OffJump()
+{
+	if (WeaponComp->GetHasWaepon() == false)
+		StopJumping();
+}
+
+void ATeam_TtingJoCharacter::OnRun()
 {
 	//Run이 True가 될 상황은?
 	//무기를 들고 있지 않을때, Falling 이 false일때, 움직이고 있는 경우
-
 	if (WeaponComp->IsUnarmedMode() == true && GetCharacterMovement()->IsFalling() == false && GetVelocity().Size2D() > 5.0f)
 	{
 		bIsRunning = true;
@@ -171,7 +180,7 @@ void ATeam_TtingJoCharacter::OnRunnimg()
 	}
 }
 
-void ATeam_TtingJoCharacter::OffRunning()
+void ATeam_TtingJoCharacter::OffRun()
 {
 	if (WeaponComp->IsUnarmedMode() == true && GetCharacterMovement()->IsFalling() == false && GetVelocity().Size2D() > 5.0f)
 	{
@@ -182,9 +191,34 @@ void ATeam_TtingJoCharacter::OffRunning()
 
 void ATeam_TtingJoCharacter::OnDodge()
 {
-	JHS_Global::PRINT(("Equipped : %s", WeaponComp->GetHasWaepon() ? TEXT("True" : TEXT("False"))));
+	if (!bIsDodge)
+	{
+		if (WeaponComp->GetHasWaepon() == true && GetVelocity().Length() > 5.0f)
+		{
+			bIsDodge = true;
+
+			GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECollisionResponse::ECR_Ignore);
+
+			JHS_Global::PRINT("Dodge Start", 1);
+			PRINT_LINE();
+
+			LaunchCharacter(GetLastMovementInputVector() * 1000.0f, false, false);
+			GetWorld()->GetTimerManager().SetTimer(DodgeHandle, this, &ATeam_TtingJoCharacter::OffDodge, 1.0f, false);
+		}
+	}
 }
 
 void ATeam_TtingJoCharacter::OffDodge()
 {
+	//해당 함수는 timer에 의해서만 호출되는데 예외처리를 할 필요가 있을까?
+	//OnDodge함수에서 예외처리 다 하고 호출되는데?
+	//if (WeaponComp->GetHasWaepon() == true)
+	//{
+		bIsDodge = false;
+
+		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECollisionResponse::ECR_Block);
+
+		JHS_Global::PRINT("Dodge End", 1);
+		PRINT_LINE();
+	//}
 }

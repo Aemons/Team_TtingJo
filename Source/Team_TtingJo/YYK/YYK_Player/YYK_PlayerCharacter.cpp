@@ -100,6 +100,16 @@ void AYYK_PlayerCharacter::InputJump(const struct FInputActionValue& inputValue)
 
 void AYYK_PlayerCharacter::ClimbStart(const FInputActionValue& inputValue)
 {
+	if(!yykMovementComp) return;
+	
+	if(!yykMovementComp->IsClimbing())
+	{
+		yykMovementComp->ToggleClimbing(true);
+	}
+	else
+	{
+		yykMovementComp->ToggleClimbing(false);
+	}
 }
 
 //bool AYYK_PlayerCharacter::ClimbLineTracing(FHitResult& hitOut)

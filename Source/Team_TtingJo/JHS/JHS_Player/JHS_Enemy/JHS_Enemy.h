@@ -15,7 +15,14 @@ class TEAM_TTINGJO_API AJHS_Enemy
 {
 	GENERATED_BODY()
 
-public://Blueprint Check
+public://Hit Montage
+	UPROPERTY(EditAnywhere, Category = "Hit Montage")
+	class UAnimMontage* HitMontage;
+
+	UPROPERTY(EditAnywhere, Category = "Hit Montage")
+	float HitPlayRate = 1.0f;
+
+public://Dead Montage
 	UPROPERTY(EditAnywhere, Category = "Dead Montage")
 	class UAnimMontage* DeadMontage;
 
@@ -24,6 +31,20 @@ public://Blueprint Check
 
 	UPROPERTY(EditAnywhere, Category = "Dead Montage")
 	FVector2D DeadPoseChance = FVector2D(0.0, 1.0);
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Dead Montage")
+	bool bIsDead = false;
+
+public://Pose Mesh Setting
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Pose Mesh")
+	bool bIsChance = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Pose Mesh")
+	float ChanceStandard = 0.2f;
+
+public:
+	UPROPERTY(EditAnywhere, Category = "Damage")
+	float AttackDamage = 10.0f;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Component")
@@ -51,7 +72,6 @@ protected:
 
 public:	
 	virtual void Tick(float DeltaTime) override;
-
 /////////////////////////////////////////////////////////////////
 
 private://Enemy의 상태를 바꿔주는 함수
@@ -76,6 +96,7 @@ public:
 	void End_Dead() override;
 
 private:
+	//HitData를 사용하기 위한 struct 정의
 	struct FDamageData
 	{
 		float Power;
@@ -85,6 +106,7 @@ private:
 		struct FMainActionDamageEvent* Event;
 	}Damage;
 
-	bool bIsChance = false;
+
+
 
 };

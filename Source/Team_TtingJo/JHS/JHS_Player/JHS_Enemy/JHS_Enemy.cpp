@@ -87,6 +87,7 @@ float AJHS_Enemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent
 	
 	StateComp->SetHittedMode();
 	
+	JHS_Global::PRINT(damage);
 	return damage;
 }
 
@@ -96,7 +97,9 @@ void AJHS_Enemy::Hitted()
 	//Damage를 전달한 후 Damage.Power를 0으로 초기화
 	Damage.Power = 0;
 	
+	//DataAsset의 HitData대신 Enemy가 자체적으로 가지고 있는 HitData사용예정
 	//DamageEvent와 HitData가 유효할때
+	/*
 	if (!!Damage.Event && !!Damage.Event->HitData)
 	{
 		FHitData* data = Damage.Event->HitData;
@@ -104,8 +107,15 @@ void AJHS_Enemy::Hitted()
 		data->PlayMontage(this);
 		data->PlayHitStop(GetWorld());
 		data->PlaySoundWave(this);
-		data->PlayEffect(GetWorld(), GetActorLocation(), GetActorRotation());
+		data->PlayEffect(GetWorld(), GetActorLocation(), GetActorRotation());ㄴ
 		
+		LaunchToEnemy();
+	}
+	*/
+
+	if (!!HitMontage)
+	{
+		PlayAnimMontage(HitMontage, HitPlayRate);
 		LaunchToEnemy();
 	}
 
@@ -118,13 +128,17 @@ void AJHS_Enemy::Hitted()
 	}
 
 	//Damage처리가 끝났으면 이후 들어올 DamageData를 위해 초기화 시킴
+	/*
 	Damage.Character = nullptr;
 	Damage.Causer = nullptr;
 	Damage.Event = nullptr;
+	*/
 }
 
 void AJHS_Enemy::Dead()
 {
+	bIsDead = true;
+
 	//죽었는때 또 충돌하면 안되므로 Collision Off
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
@@ -134,7 +148,7 @@ void AJHS_Enemy::Dead()
 	//TODO : Enemy Dead 후 일정확률로 잔상이 남음
 	//랜덤한 수를 구하고 임의의 일정한 확률을 설정함
 	const float Chance = FMath::RandRange(DeadPoseChance.X, DeadPoseChance.Y);
-	if (Chance >= 0.5f)
+	if (Chance <= ChanceStandard)
 	{
 		bIsChance = true;
 		CreateDeathPose();
@@ -180,7 +194,6 @@ void AJHS_Enemy::CreateDeathPose()
 	PoseComp->RegisterComponent();
 	PoseComp->AttachToComponent(DeathImage->GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
 	PoseComp->SetSkeletalMesh(GetMesh()->SkeletalMesh);
-	PoseComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	PoseComp->SetWorldLocation(this->GetActorLocation() + FVector(0, 0, -90));
 	PoseComp->SetWorldRotation(this->GetActorRotation() + FRotator(0, -90, 0));
 	////////////////////////////////////////////////////////////////////////////

@@ -65,6 +65,8 @@ ATeam_TtingJoCharacter::ATeam_TtingJoCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+
+	CurrentHealth = MaxHealth;
 }
 
 void ATeam_TtingJoCharacter::BeginPlay()
@@ -173,7 +175,7 @@ void ATeam_TtingJoCharacter::OnRun()
 {
 	//Run이 True가 될 상황은?
 	//무기를 들고 있지 않을때, Falling 이 false일때, 움직이고 있는 경우
-	if (WeaponComp->IsUnarmedMode() == true && GetCharacterMovement()->IsFalling() == false && GetVelocity().Size2D() > 5.0f)
+	if (GetCharacterMovement()->IsFalling() == false && GetVelocity().Size2D() > 5.0f)
 	{
 		bIsRunning = true;
 		MovementComp->OnRun();
@@ -182,7 +184,7 @@ void ATeam_TtingJoCharacter::OnRun()
 
 void ATeam_TtingJoCharacter::OffRun()
 {
-	if (WeaponComp->IsUnarmedMode() == true && GetCharacterMovement()->IsFalling() == false && GetVelocity().Size2D() > 5.0f)
+	if (GetCharacterMovement()->IsFalling() == false && GetVelocity().Size2D() > 5.0f)
 	{
 		bIsRunning = false;
 		MovementComp->OnJog();
@@ -199,9 +201,6 @@ void ATeam_TtingJoCharacter::OnDodge()
 
 			GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECollisionResponse::ECR_Ignore);
 
-			JHS_Global::PRINT("Dodge Start", 1);
-			PRINT_LINE();
-
 			LaunchCharacter(GetLastMovementInputVector() * 1000.0f, false, false);
 			GetWorld()->GetTimerManager().SetTimer(DodgeHandle, this, &ATeam_TtingJoCharacter::OffDodge, 1.0f, false);
 		}
@@ -217,8 +216,5 @@ void ATeam_TtingJoCharacter::OffDodge()
 		bIsDodge = false;
 
 		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECollisionResponse::ECR_Block);
-
-		JHS_Global::PRINT("Dodge End", 1);
-		PRINT_LINE();
 	//}
 }

@@ -73,6 +73,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WeaponType")
 	EWeaponType WeaponType = EWeaponType::Max;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Health")
+	float MaxHealth = 100.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	float CurrentHealth = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dodge Value")
+	bool bIsDodge = false;
+
+
 //Set JHS Component
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ActorComponent", meta = (DisplayPriority = "1"))
@@ -119,7 +129,6 @@ public:
 
 private:
 	bool bIsRunning = false;
-	bool bIsDodge = false;
 
 	FVector2D MovementInputVector = FVector2D::ZeroVector;
 

@@ -54,7 +54,7 @@ void UJHS_MainAction_Combo::OnAttachmentBeginOverlap(ACharacter* InAttacker, AAc
 
 	HitTargets.Add(InOther);
 
-	//TODO :: Hit data 만들면 추후 추가바람
+	//TODO : DataAsset의 HitData대신 Enemy의 HitData사용예정
 	HitDatas[Index].SendDamage(InAttacker, InAttackCuaser, InOther);
 }
 

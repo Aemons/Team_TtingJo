@@ -86,11 +86,42 @@ void AYYK_PlayerCharacter::LookUp(const struct FInputActionValue& inputValue)
 
 void AYYK_PlayerCharacter::Move(const struct FInputActionValue& inputValue)
 {
+	if(!yykMovementComp)	return;
+
+	if(yykMovementComp->IsClimbing())
+	{
+		ClimbMove(inputValue);
+	}
+	else
+	{
+		GroundMove(inputValue);
+	}
+	
+}
+
+void AYYK_PlayerCharacter::GroundMove(const struct FInputActionValue& inputValue)
+{
 	FVector2D value = inputValue.Get<FVector2D>();
 	// 상하 입력 이벤트 처리
 	direction.X=value.X;
 	// 좌우 입력 이벤트 처리
 	direction.Y=value.Y;
+}
+
+void AYYK_PlayerCharacter::ClimbMove(const struct FInputActionValue& inputValue)
+{
+	FVector2D value = inputValue.Get<FVector2D>();
+
+	FVector ForwardDirection = FVector::CrossProduct(
+		-yykMovementComp->GetClimbableSurfaceNormal(),
+		GetActorRightVector());
+
+	FVector RightDirection = FVector::CrossProduct(
+		-yykMovementComp->GetClimbableSurfaceNormal(),
+		-GetActorUpVector());
+
+	AddMovementInput(ForwardDirection, value.X);
+	AddMovementInput(RightDirection, value.Y);
 }
 
 void AYYK_PlayerCharacter::InputJump(const struct FInputActionValue& inputValue)

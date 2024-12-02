@@ -82,12 +82,11 @@ float AJHS_Enemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent
 
 	Damage.Power = damage;
 	Damage.Character = Cast<ACharacter>(EventInstigator->GetPawn());
-	Damage.Causer = DamageCauser;
+	//Damage.Causer = DamageCauser;
 	Damage.Event = (FMainActionDamageEvent*)&DamageEvent;
 	
 	StateComp->SetHittedMode();
-	
-	JHS_Global::PRINT(damage);
+
 	return damage;
 }
 
@@ -246,6 +245,6 @@ void AJHS_Enemy::End_Dead()
 	else
 	{
 		GetMesh()->bPauseAnims = true;
-		//SetLifeSpan(3.0f);
+		SetLifeSpan(0.1f);
 	}
 }

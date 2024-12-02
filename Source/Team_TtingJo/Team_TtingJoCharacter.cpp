@@ -209,12 +209,9 @@ void ATeam_TtingJoCharacter::OnDodge()
 
 void ATeam_TtingJoCharacter::OffDodge()
 {
-	//해당 함수는 timer에 의해서만 호출되는데 예외처리를 할 필요가 있을까?
-	//OnDodge함수에서 예외처리 다 하고 호출되는데?
-	//if (WeaponComp->GetHasWaepon() == true)
-	//{
-		bIsDodge = false;
 
-		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECollisionResponse::ECR_Block);
-	//}
+	bIsDodge = false;
+
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECollisionResponse::ECR_Block);
+
 }

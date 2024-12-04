@@ -39,8 +39,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	class UInputAction* ia_Jump;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
-    class UInputAction* ia_Climb;
+	//UPROPERTY(EditDefaultsOnly, Category = "Input")
+    //class UInputAction* ia_Climb;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	class UInputAction* ia_Dash;

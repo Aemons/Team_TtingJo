@@ -68,7 +68,7 @@ void AYYK_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		playerInput->BindAction(ia_Lookup, ETriggerEvent::Triggered, this, &AYYK_PlayerCharacter::LookUp);
 		playerInput->BindAction(ia_Move, ETriggerEvent::Triggered, this, &AYYK_PlayerCharacter::Move);
 		playerInput->BindAction(ia_Jump, ETriggerEvent::Started, this, &AYYK_PlayerCharacter::InputJump);
-		playerInput->BindAction(ia_Climb, ETriggerEvent::Started, this, &AYYK_PlayerCharacter::ClimbStart);
+		//playerInput->BindAction(ia_Climb, ETriggerEvent::Started, this, &AYYK_PlayerCharacter::ClimbStart);
 	}
 }
 
@@ -129,19 +129,19 @@ void AYYK_PlayerCharacter::InputJump(const struct FInputActionValue& inputValue)
 	Jump();
 }
 
-void AYYK_PlayerCharacter::ClimbStart(const FInputActionValue& inputValue)
-{
-	if(!yykMovementComp) return;
-	
-	if(!yykMovementComp->IsClimbing())
-	{
-		yykMovementComp->ToggleClimbing(true);
-	}
-	else
-	{
-		yykMovementComp->ToggleClimbing(false);
-	}
-}
+// void AYYK_PlayerCharacter::ClimbStart(const FInputActionValue& inputValue)
+// {
+// 	if(!yykMovementComp) return;
+// 	
+// 	if(!yykMovementComp->IsClimbing())
+// 	{
+// 		yykMovementComp->ToggleClimbing(true);
+// 	}
+// 	else
+// 	{
+// 		yykMovementComp->ToggleClimbing(false);
+// 	}
+// }
 
 //bool AYYK_PlayerCharacter::ClimbLineTracing(FHitResult& hitOut)
 //{

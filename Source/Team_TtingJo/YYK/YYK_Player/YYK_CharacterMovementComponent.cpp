@@ -10,8 +10,16 @@ void UYYK_CharacterMovementComponent::TickComponent(float DeltaTime, ELevelTick 
 	FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	// TraceClimbableSurfaces();
-	// TraceFromEyeHeight(100.f);
+	
+	// 등반 가능한 표면 감지 및 등반 상태 전환
+	if (!IsClimbing() && CanStartClimbing())
+	{
+		ToggleClimbing(true); // 등반 시작
+	}
+	else if (IsClimbing() && CheckShouldStopClimbing())
+	{
+		ToggleClimbing(false); // 등반 종료
+	}
 }
 
 void UYYK_CharacterMovementComponent::OnMovementModeChanged(EMovementMode PreviousMovementMode,
@@ -144,18 +152,7 @@ void UYYK_CharacterMovementComponent::ToggleClimbing(bool bEnableClimb)
 		if(CanStartClimbing())
 		{
 			// climb state에 들어가기
-			if(GEngine)
-			{
-				GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Emerald,TEXT("Can start climb"));
-			}
 			StartClimbing();
-		}
-		else
-		{
-			if(GEngine)
-			{
-				GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Emerald,TEXT("Can NOT start climb"));
-			}
 		}
 	}
 	else
@@ -176,7 +173,7 @@ bool UYYK_CharacterMovementComponent::TraceClimbableSurfaces()
 	const FVector startOffset=UpdatedComponent->GetForwardVector()*30.f;
 	const FVector start=UpdatedComponent->GetComponentLocation()+startOffset;
 	const FVector end=start+UpdatedComponent->GetForwardVector();
-	climbableSurfacesTraceResults = DoCapsuleTraceMultiByObject(start,end,true);
+	climbableSurfacesTraceResults = DoCapsuleTraceMultiByObject(start,end);
 
 	return !climbableSurfacesTraceResults.IsEmpty();
 }
@@ -222,6 +219,10 @@ void UYYK_CharacterMovementComponent::PhysClimb(float deltaTime, int32 Iteration
 	ProcessClimbableSurfaceInfo();
 	
 	// check if we should stop climbing
+	if(CheckShouldStopClimbing())
+	{
+		StopClimbing();
+	}
 	RestorePreAdditiveRootMotionVelocity();
 	
 	if( !HasAnimRootMotion() && !CurrentRootMotion.HasOverrideVelocity() )
@@ -268,6 +269,19 @@ void UYYK_CharacterMovementComponent::ProcessClimbableSurfaceInfo()
 	}
 	CurrentClimbableSurfaceLocation /= climbableSurfacesTraceResults.Num();
 	CurrentClimbableSurfaceNormal = CurrentClimbableSurfaceNormal.GetSafeNormal();
+}
+
+bool UYYK_CharacterMovementComponent::CheckShouldStopClimbing()
+{
+	if(climbableSurfacesTraceResults.IsEmpty())	return true;
+
+	const float dotResult=FVector::DotProduct(CurrentClimbableSurfaceNormal, FVector::UpVector);
+	const float degreeDiff=FMath::RadiansToDegrees(FMath::Acos(dotResult));
+
+	if(degreeDiff<=30.f)
+		return true;
+	
+	return false;
 }
 
 FQuat UYYK_CharacterMovementComponent::GetClimbRotation(float deltaTime)

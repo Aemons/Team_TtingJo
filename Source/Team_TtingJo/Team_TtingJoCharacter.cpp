@@ -209,9 +209,7 @@ void ATeam_TtingJoCharacter::OnDodge()
 
 void ATeam_TtingJoCharacter::OffDodge()
 {
-
 	bIsDodge = false;
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECollisionResponse::ECR_Block);
-
 }

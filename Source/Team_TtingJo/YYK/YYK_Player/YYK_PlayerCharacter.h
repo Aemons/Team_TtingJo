@@ -28,12 +28,6 @@ public:
 	class UInputMappingContext* imc_main;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	class UInputAction* ia_Lookup;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	class UInputAction* ia_Turn;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	class UInputAction* ia_Move;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
@@ -44,6 +38,9 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	class UInputAction* ia_Dash;
+
+	UPROPERTY(VisibleAnywhere, Category=Component)
+	class UYYK_PlayerBaseComponent* playerMove;
 	
 public:
 	// Sets default values for this character's properties
@@ -61,12 +58,6 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 public:
-	// 좌우 회전 입력 처리
-	void Turn(const struct FInputActionValue& inputValue);
-
-	// 상하 회전 입력 처리
-	void LookUp(const struct FInputActionValue& inputValue);
-
 	void Move(const struct FInputActionValue& inputValue);
 
 	void GroundMove(const struct FInputActionValue& inputValue);
@@ -74,7 +65,7 @@ public:
 	
 	void InputJump(const struct FInputActionValue& inputValue);
 
-	void ClimbStart(const struct FInputActionValue& inputValue);
+	// void ClimbStart(const struct FInputActionValue& inputValue);
 	
 	// void Dash(const struct FInputActionValue& inputValue);
 

@@ -8,6 +8,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
+#include "YYK_PlayerMoveComponent.h"
 
 // Sets default values
 AYYK_PlayerCharacter::AYYK_PlayerCharacter(const FObjectInitializer& ObjectInitializer)
@@ -27,6 +28,8 @@ AYYK_PlayerCharacter::AYYK_PlayerCharacter(const FObjectInitializer& ObjectIniti
 	yykMovementComp = Cast<UYYK_CharacterMovementComponent>(GetCharacterMovement());
 
 	bUseControllerRotationYaw=true;
+
+	playerMove=CreateDefaultSubobject<UYYK_PlayerMoveComponent>(TEXT("PlayerMoveComponent"));
 }
 
 // Called when the game starts or when spawned
@@ -64,24 +67,14 @@ void AYYK_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	auto playerInput = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
 	if(playerInput)
 	{
-		playerInput->BindAction(ia_Turn, ETriggerEvent::Triggered, this, &AYYK_PlayerCharacter::Turn);
-		playerInput->BindAction(ia_Lookup, ETriggerEvent::Triggered, this, &AYYK_PlayerCharacter::LookUp);
+		playerMove->SetupInputBinding(playerInput);
+		
+		// playerInput->BindAction(ia_Turn, ETriggerEvent::Triggered, this, &AYYK_PlayerCharacter::Turn);
+		// playerInput->BindAction(ia_Lookup, ETriggerEvent::Triggered, this, &AYYK_PlayerCharacter::LookUp);
 		playerInput->BindAction(ia_Move, ETriggerEvent::Triggered, this, &AYYK_PlayerCharacter::Move);
 		playerInput->BindAction(ia_Jump, ETriggerEvent::Started, this, &AYYK_PlayerCharacter::InputJump);
 		//playerInput->BindAction(ia_Climb, ETriggerEvent::Started, this, &AYYK_PlayerCharacter::ClimbStart);
 	}
-}
-
-void AYYK_PlayerCharacter::Turn(const struct FInputActionValue& inputValue)
-{
-	float value = inputValue.Get<float>();
-	AddControllerYawInput(value);
-}
-
-void AYYK_PlayerCharacter::LookUp(const struct FInputActionValue& inputValue)
-{
-	float value = inputValue.Get<float>();
-	AddControllerPitchInput(value);
 }
 
 void AYYK_PlayerCharacter::Move(const struct FInputActionValue& inputValue)

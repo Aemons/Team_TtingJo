@@ -27,11 +27,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	class UInputMappingContext* imc_main;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	class UInputAction* ia_Move;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	class UInputAction* ia_Jump;
+	//UPROPERTY(EditDefaultsOnly, Category = "Input")
+	//class UInputAction* ia_Move;
 	
 	//UPROPERTY(EditDefaultsOnly, Category = "Input")
     //class UInputAction* ia_Climb;
@@ -58,12 +55,10 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 public:
-	void Move(const struct FInputActionValue& inputValue);
+	//void Move(const struct FInputActionValue& inputValue);
 
-	void GroundMove(const struct FInputActionValue& inputValue);
-	void ClimbMove(const struct FInputActionValue& inputValue);
-	
-	void InputJump(const struct FInputActionValue& inputValue);
+	//void GroundMove(const struct FInputActionValue& inputValue);
+	//void ClimbMove(const struct FInputActionValue& inputValue);
 
 	// void ClimbStart(const struct FInputActionValue& inputValue);
 	

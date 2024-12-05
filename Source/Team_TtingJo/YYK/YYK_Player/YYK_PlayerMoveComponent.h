@@ -24,6 +24,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	class UInputAction* ia_Move;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	class UInputAction* ia_Jump;
+	
+
 public:
 	// 좌우 회전 입력 처리
 	void Turn(const struct FInputActionValue& inputValue);
@@ -32,6 +36,11 @@ public:
 	void LookUp(const struct FInputActionValue& inputValue);
 
 	void Move(const struct FInputActionValue& inputValue);
+
+	void GroundMove(const struct FInputActionValue& inputValue);
+	void ClimbMove(const struct FInputActionValue& inputValue);
+
+	void InputJump(const struct FInputActionValue& inputValue);
 
 	virtual void SetupInputBinding(class UEnhancedInputComponent* playerInput) override;
 

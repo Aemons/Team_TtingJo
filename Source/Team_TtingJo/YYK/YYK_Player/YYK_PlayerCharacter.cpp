@@ -71,56 +71,51 @@ void AYYK_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		
 		// playerInput->BindAction(ia_Turn, ETriggerEvent::Triggered, this, &AYYK_PlayerCharacter::Turn);
 		// playerInput->BindAction(ia_Lookup, ETriggerEvent::Triggered, this, &AYYK_PlayerCharacter::LookUp);
-		playerInput->BindAction(ia_Move, ETriggerEvent::Triggered, this, &AYYK_PlayerCharacter::Move);
-		playerInput->BindAction(ia_Jump, ETriggerEvent::Started, this, &AYYK_PlayerCharacter::InputJump);
+		//playerInput->BindAction(ia_Move, ETriggerEvent::Triggered, this, &AYYK_PlayerCharacter::Move);
+		//playerInput->BindAction(ia_Jump, ETriggerEvent::Started, this, &AYYK_PlayerCharacter::InputJump);
 		//playerInput->BindAction(ia_Climb, ETriggerEvent::Started, this, &AYYK_PlayerCharacter::ClimbStart);
 	}
 }
 
-void AYYK_PlayerCharacter::Move(const struct FInputActionValue& inputValue)
-{
-	if(!yykMovementComp)	return;
-
-	if(yykMovementComp->IsClimbing())
-	{
-		ClimbMove(inputValue);
-	}
-	else
-	{
-		GroundMove(inputValue);
-	}
-	
-}
-
-void AYYK_PlayerCharacter::GroundMove(const struct FInputActionValue& inputValue)
-{
-	FVector2D value = inputValue.Get<FVector2D>();
-	// 상하 입력 이벤트 처리
-	direction.X=value.X;
-	// 좌우 입력 이벤트 처리
-	direction.Y=value.Y;
-}
-
-void AYYK_PlayerCharacter::ClimbMove(const struct FInputActionValue& inputValue)
-{
-	FVector2D value = inputValue.Get<FVector2D>();
-
-	FVector ForwardDirection = FVector::CrossProduct(
-		-yykMovementComp->GetClimbableSurfaceNormal(),
-		GetActorRightVector());
-
-	FVector RightDirection = FVector::CrossProduct(
-		-yykMovementComp->GetClimbableSurfaceNormal(),
-		-GetActorUpVector());
-
-	AddMovementInput(ForwardDirection, value.X);
-	AddMovementInput(RightDirection, value.Y);
-}
-
-void AYYK_PlayerCharacter::InputJump(const struct FInputActionValue& inputValue)
-{
-	Jump();
-}
+// void AYYK_PlayerCharacter::Move(const struct FInputActionValue& inputValue)
+// {
+// 	if(!yykMovementComp)	return;
+//
+// 	if(yykMovementComp->IsClimbing())
+// 	{
+// 		ClimbMove(inputValue);
+// 	}
+// 	else
+// 	{
+// 		GroundMove(inputValue);
+// 	}
+// 	
+// }
+//
+// void AYYK_PlayerCharacter::GroundMove(const struct FInputActionValue& inputValue)
+// {
+// 	FVector2D value = inputValue.Get<FVector2D>();
+// 	// 상하 입력 이벤트 처리
+// 	direction.X=value.X;
+// 	// 좌우 입력 이벤트 처리
+// 	direction.Y=value.Y;
+// }
+//
+// void AYYK_PlayerCharacter::ClimbMove(const struct FInputActionValue& inputValue)
+// {
+// 	FVector2D value = inputValue.Get<FVector2D>();
+//
+// 	FVector ForwardDirection = FVector::CrossProduct(
+// 		-yykMovementComp->GetClimbableSurfaceNormal(),
+// 		GetActorRightVector());
+//
+// 	FVector RightDirection = FVector::CrossProduct(
+// 		-yykMovementComp->GetClimbableSurfaceNormal(),
+// 		-GetActorUpVector());
+//
+// 	AddMovementInput(ForwardDirection, value.X);
+// 	AddMovementInput(RightDirection, value.Y);
+// }
 
 // void AYYK_PlayerCharacter::ClimbStart(const FInputActionValue& inputValue)
 // {

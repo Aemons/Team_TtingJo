@@ -70,4 +70,7 @@ public:
 
 public:
 	FVector direction;
+
+public:
+	FORCEINLINE UYYK_CharacterMovementComponent* GetYYKCharacterMovementComponent() const { return yykMovementComp; }
 };

@@ -16,7 +16,7 @@ class TEAM_TTINGJO_API AJHS_Enemy
 	GENERATED_BODY()
 
 public://Hit Montage
-	UPROPERTY(EditAnywhere, Category = "Hit Montage")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Hit Montage")
 	class UAnimMontage* HitMontage;
 
 	UPROPERTY(EditAnywhere, Category = "Hit Montage")

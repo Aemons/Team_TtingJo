@@ -34,5 +34,7 @@ private:
 	TArray<class ACharacter*> Hitted;
 
 	//Avoid Double Hits
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSet<ACharacter*> HitTargets;
 };

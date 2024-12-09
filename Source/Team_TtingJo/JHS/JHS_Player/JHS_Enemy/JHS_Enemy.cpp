@@ -80,12 +80,15 @@ float AJHS_Enemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent
 {
 	float damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-	Damage.Power = damage;
-	Damage.Character = Cast<ACharacter>(EventInstigator->GetPawn());
-	//Damage.Causer = DamageCauser;
-	Damage.Event = (FMainActionDamageEvent*)&DamageEvent;
-	
-	StateComp->SetHittedMode();
+	if (EventInstigator && EventInstigator->GetPawn() != this)
+	{
+		Damage.Power = damage;
+		Damage.Character = Cast<ACharacter>(EventInstigator->GetPawn());
+		//Damage.Causer = DamageCauser;
+		Damage.Event = (FMainActionDamageEvent*)&DamageEvent;
+
+		StateComp->SetHittedMode();
+	}
 
 	return damage;
 }
@@ -115,7 +118,11 @@ void AJHS_Enemy::Hitted()
 	if (!!HitMontage)
 	{
 		PlayAnimMontage(HitMontage, HitPlayRate);
-		LaunchToEnemy();
+
+		if (bIsLaunch)
+		{
+			LaunchToEnemy();
+		}
 	}
 
 	//HP가 0 보다 작거나 같을때
@@ -166,11 +173,14 @@ void AJHS_Enemy::LaunchToEnemy()
 		FVector Target = Damage.Character->GetActorLocation();
 		//나와 Target 사이의 거리, 방향
 		FVector Direction = Target - Start;
+
 		//정규화를 통해 방향만 남김
 		Direction.Normalize();
 
 		//Enemy입장에서 계산을 해야 하므로 앞방향으로 날리는게 아닌 뒤방향으로 날려야 함
-		LaunchCharacter((-Direction * data->Launch), false, false);
+		//Boss Enemy Launch를 재정의해서 사용하기 위해 변수화
+		HitLaunch = data->Launch;
+		LaunchCharacter((-Direction * HitLaunch), true, false);
 		//날아간 후에 Enemy가 Target을 바라보게 함
 		SetActorRotation(UKismetMathLibrary::FindLookAtRotation(Start, Target));
 	}

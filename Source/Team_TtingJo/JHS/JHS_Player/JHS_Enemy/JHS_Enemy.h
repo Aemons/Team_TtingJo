@@ -22,6 +22,12 @@ public://Hit Montage
 	UPROPERTY(EditAnywhere, Category = "Hit Montage")
 	float HitPlayRate = 1.0f;
 
+	UPROPERTY(EditAnywhere, Category = "Hit Montage")
+	bool bIsLaunch = false;
+
+	UPROPERTY(EditAnywhere, Category = "Hit Montage")
+	float HitLaunch = 0.0;
+
 public://Dead Montage
 	UPROPERTY(EditAnywhere, Category = "Dead Montage")
 	class UAnimMontage* DeadMontage;
@@ -32,7 +38,7 @@ public://Dead Montage
 	UPROPERTY(EditAnywhere, Category = "Dead Montage")
 	FVector2D DeadPoseChance = FVector2D(0.0, 1.0);
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Dead Montage")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dead Montage")
 	bool bIsDead = false;
 
 public://Pose Mesh Setting

@@ -39,6 +39,10 @@ public:
 	bool bIsFalling;
 	void GetIsFalling();
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Reference, meta=(AllowPrivateAccess=true))
+	bool bIsClimbing;
+	void GetIsClimbing();
+	
 public:
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;

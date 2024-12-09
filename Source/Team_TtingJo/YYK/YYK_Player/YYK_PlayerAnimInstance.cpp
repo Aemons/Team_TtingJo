@@ -6,6 +6,7 @@
 #include "YYK_CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
+
 void UYYK_PlayerAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
@@ -48,4 +49,9 @@ void UYYK_PlayerAnimInstance::GetShouldMove()
 void UYYK_PlayerAnimInstance::GetIsFalling()
 {
 	bIsFalling = yykMovementComp->IsFalling();
+}
+
+void UYYK_PlayerAnimInstance::GetIsClimbing()
+{
+	
 }

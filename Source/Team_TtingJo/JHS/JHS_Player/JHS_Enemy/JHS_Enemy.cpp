@@ -154,6 +154,7 @@ void AJHS_Enemy::Dead()
 	//TODO : Enemy Dead 후 일정확률로 잔상이 남음
 	//랜덤한 수를 구하고 임의의 일정한 확률을 설정함
 	const float Chance = FMath::RandRange(DeadPoseChance.X, DeadPoseChance.Y);
+
 	if (Chance <= ChanceStandard)
 	{
 		bIsChance = true;

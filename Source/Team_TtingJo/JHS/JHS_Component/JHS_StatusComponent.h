@@ -16,8 +16,11 @@ public:
 	FORCEINLINE bool IsDead() { return CurrentHealth <= 0.0f; }
 
 public:
-	UPROPERTY(EditAnywhere, Category = "HP")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly ,Category = "HP")
 	float MaxHealth = 100.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "HP")
+	float CurrentHealth;
 
 //Default Function
 //////////////////////////////////////////////////////////////
@@ -32,7 +35,6 @@ public:
 	void Damage(float InAmount);
 
 private:
-	float CurrentHealth;
 	class ACharacter* OwnerCharacter;
 
 };

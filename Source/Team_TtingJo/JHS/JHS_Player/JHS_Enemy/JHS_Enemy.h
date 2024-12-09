@@ -66,8 +66,10 @@ private:
 	UPROPERTY(VisibleDefaultsOnly)
 	class UJHS_StateComponent* StateComp;
 
-	UPROPERTY(VisibleDefaultsOnly)
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class UJHS_StatusComponent* StatusComp;
+
 //Default Function
 /////////////////////////////////////////////////////////////////
 public:
@@ -111,8 +113,4 @@ private:
 
 		struct FMainActionDamageEvent* Event;
 	}Damage;
-
-
-
-
 };

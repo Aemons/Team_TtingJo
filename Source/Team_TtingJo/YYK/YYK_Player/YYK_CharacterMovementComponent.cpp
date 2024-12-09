@@ -6,8 +6,21 @@
 #include "YYK_PlayerCharacter.h"
 #include "Components/CapsuleComponent.h"
 
+void UYYK_CharacterMovementComponent::BeginPlay()
+{
+	Super::BeginPlay();
+
+	OwnigPlayerInstance = CharacterOwner->GetMesh()->GetAnimInstance();
+
+	if(OwnigPlayerInstance)
+	{
+		OwnigPlayerInstance->OnMontageEnded.AddDynamic(this, &UYYK_CharacterMovementComponent::OnClimbMontageEnded);
+		OwnigPlayerInstance->OnMontageBlendingOut.AddDynamic(this, &UYYK_CharacterMovementComponent::OnClimbMontageEnded);
+	}
+}
+
 void UYYK_CharacterMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
-	FActorComponentTickFunction* ThisTickFunction)
+                                                    FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	
@@ -152,7 +165,8 @@ void UYYK_CharacterMovementComponent::ToggleClimbing(bool bEnableClimb)
 		if(CanStartClimbing())
 		{
 			// climb state에 들어가기
-			StartClimbing();
+			//StartClimbing();
+			PlayClimbMongtage(IdleToClimbMontage);
 		}
 	}
 	else
@@ -309,4 +323,22 @@ void UYYK_CharacterMovementComponent::SnapMovementToClimbableSurfaces(float delt
 		UpdatedComponent->GetComponentQuat(),
 		true);
 }
+
+void UYYK_CharacterMovementComponent::PlayClimbMongtage(UAnimMontage* MontageToPlay)
+{
+	if(!MontageToPlay)	return;
+	if(!OwnigPlayerInstance)	return;
+	if(OwnigPlayerInstance->IsAnyMontagePlaying())	return;
+
+	OwnigPlayerInstance->Montage_Play(MontageToPlay);
+}
+
+void UYYK_CharacterMovementComponent::OnClimbMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	if (Montage == IdleToClimbMontage)
+	{
+		StartClimbing();
+	}
+}
+
 #pragma endregion

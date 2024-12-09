@@ -29,6 +29,7 @@ void UYYK_PlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	GetAirSpeed();
 	GetShouldMove();
 	GetIsFalling();
+	GetIsClimbing();
 }
 
 void UYYK_PlayerAnimInstance::GetGroundSpeed()
@@ -53,5 +54,5 @@ void UYYK_PlayerAnimInstance::GetIsFalling()
 
 void UYYK_PlayerAnimInstance::GetIsClimbing()
 {
-	
+	bIsClimbing = yykMovementComp->IsClimbing();
 }

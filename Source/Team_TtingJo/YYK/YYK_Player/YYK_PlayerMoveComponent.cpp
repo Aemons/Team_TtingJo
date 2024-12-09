@@ -10,6 +10,7 @@ void UYYK_PlayerMoveComponent::SetupInputBinding(class UEnhancedInputComponent* 
 	playerInput->BindAction(ia_Lookup, ETriggerEvent::Triggered, this, &UYYK_PlayerMoveComponent::LookUp);
 	playerInput->BindAction(ia_Move, ETriggerEvent::Triggered, this, &UYYK_PlayerMoveComponent::Move);
 	playerInput->BindAction(ia_Jump, ETriggerEvent::Started, this, &UYYK_PlayerMoveComponent::InputJump);
+	playerInput->BindAction(ia_Climb, ETriggerEvent::Started, this, &UYYK_PlayerMoveComponent::ClimbEnd);
 }
 
 
@@ -70,5 +71,14 @@ void UYYK_PlayerMoveComponent::ClimbMove(const struct FInputActionValue& inputVa
 void UYYK_PlayerMoveComponent::InputJump(const struct FInputActionValue& inputValue)
 {
 	player->Jump();
+}
+
+void UYYK_PlayerMoveComponent::ClimbEnd(const FInputActionValue& inputValue)
+{
+	//if(!moveComp)	return;
+	//if(moveComp->IsClimbing())
+	//{
+	//	moveComp->ToggleClimbing(false);
+	//}
 }
 

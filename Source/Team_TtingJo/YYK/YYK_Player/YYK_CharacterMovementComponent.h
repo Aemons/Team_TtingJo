@@ -9,6 +9,8 @@
 /**
  * 
  */
+class UAnimMontage;
+class UAnimInstance;
 UENUM(BlueprintType)
 namespace ECustomMovementType
 {
@@ -41,6 +43,10 @@ private:
 	bool CheckShouldStopClimbing();
 	FQuat GetClimbRotation(float deltaTime);
 	void SnapMovementToClimbableSurfaces(float deltaTime);
+	void PlayClimbMongtage(UAnimMontage* MontageToPlay);
+
+	UFUNCTION()
+	void OnClimbMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 #pragma endregion
 
 public:
@@ -62,10 +68,14 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Character Movement Climbing")
 	float MaxClimbAcceleration = 300.f;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Character Movement Climbing")
+	UAnimMontage* IdleToClimbMontage;
 #pragma endregion
 
 #pragma region OverrideFunctions
 public:
+	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
 	virtual void OnMovementModeChanged(EMovementMode PreviousMovementMode, uint8 PreviousCustomMode) override;
 	virtual void PhysCustom(float deltaTime, int32 Iterations) override;
@@ -83,5 +93,8 @@ private:
 	FVector CurrentClimbableSurfaceLocation;
 	
 	FVector CurrentClimbableSurfaceNormal;
+
+	UPROPERTY()
+	UAnimInstance* OwnigPlayerInstance;
 #pragma endregion
 };

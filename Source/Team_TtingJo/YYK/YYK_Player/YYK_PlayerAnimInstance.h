@@ -42,6 +42,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Reference, meta=(AllowPrivateAccess=true))
 	bool bIsClimbing;
 	void GetIsClimbing();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Reference, meta=(AllowPrivateAccess=true))
+	FVector ClimbVelocity;
+	void GetClimbVelocity();
 	
 public:
 	virtual void NativeInitializeAnimation() override;

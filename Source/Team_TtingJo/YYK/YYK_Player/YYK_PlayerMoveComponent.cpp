@@ -75,10 +75,11 @@ void UYYK_PlayerMoveComponent::InputJump(const struct FInputActionValue& inputVa
 
 void UYYK_PlayerMoveComponent::ClimbEnd(const FInputActionValue& inputValue)
 {
-	//if(!moveComp)	return;
-	//if(moveComp->IsClimbing())
-	//{
-	//	moveComp->ToggleClimbing(false);
-	//}
+	if(!moveComp || !player)	return;
+	if(moveComp->IsClimbing())
+	{
+		// 등반 상태 해제
+		moveComp->ToggleClimbing(false);
+	}
 }
 

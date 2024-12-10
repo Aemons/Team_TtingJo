@@ -5,6 +5,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "YYK_PlayerCharacter.h"
 #include "Components/CapsuleComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 void UYYK_CharacterMovementComponent::BeginPlay()
 {
@@ -292,7 +293,7 @@ bool UYYK_CharacterMovementComponent::CheckShouldStopClimbing()
 	const float dotResult=FVector::DotProduct(CurrentClimbableSurfaceNormal, FVector::UpVector);
 	const float degreeDiff=FMath::RadiansToDegrees(FMath::Acos(dotResult));
 
-	if(degreeDiff<=30.f)
+	if(degreeDiff<=60.f)
 		return true;
 	
 	return false;
@@ -339,6 +340,11 @@ void UYYK_CharacterMovementComponent::OnClimbMontageEnded(UAnimMontage* Montage,
 	{
 		StartClimbing();
 	}
+}
+
+FVector UYYK_CharacterMovementComponent::GetUnrotatedClimbVelocity() const
+{
+	return UKismetMathLibrary::Quat_UnrotateVector(UpdatedComponent->GetComponentQuat(), Velocity);
 }
 
 #pragma endregion

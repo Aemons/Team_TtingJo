@@ -7,6 +7,7 @@
 #include "Kismet/KismetMathLibrary.h"
 
 
+
 void UYYK_PlayerAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
@@ -30,6 +31,7 @@ void UYYK_PlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	GetShouldMove();
 	GetIsFalling();
 	GetIsClimbing();
+	GetClimbVelocity();
 }
 
 void UYYK_PlayerAnimInstance::GetGroundSpeed()
@@ -55,4 +57,9 @@ void UYYK_PlayerAnimInstance::GetIsFalling()
 void UYYK_PlayerAnimInstance::GetIsClimbing()
 {
 	bIsClimbing = yykMovementComp->IsClimbing();
+}
+
+void UYYK_PlayerAnimInstance::GetClimbVelocity()
+{
+	ClimbVelocity = yykMovementComp->GetUnrotatedClimbVelocity();
 }

@@ -234,7 +234,7 @@ void UYYK_CharacterMovementComponent::PhysClimb(float deltaTime, int32 Iteration
 	ProcessClimbableSurfaceInfo();
 	
 	// check if we should stop climbing
-	if(CheckShouldStopClimbing())
+	if(CheckShouldStopClimbing() || CheckHasReachedFloor())
 	{
 		StopClimbing();
 	}
@@ -296,6 +296,30 @@ bool UYYK_CharacterMovementComponent::CheckShouldStopClimbing()
 	if(degreeDiff<=60.f)
 		return true;
 	
+	return false;
+}
+
+bool UYYK_CharacterMovementComponent::CheckHasReachedFloor()
+{
+	const FVector DownVector = -UpdatedComponent->GetUpVector();
+	const FVector StartOffset = DownVector * 50.f;
+
+	const FVector Start = UpdatedComponent->GetComponentLocation() + StartOffset;
+	const FVector End = Start + DownVector;
+
+	TArray<FHitResult> PossibleFlootHits = DoCapsuleTraceMultiByObject(Start, End);
+
+	if(PossibleFlootHits.IsEmpty())	return false;
+
+	for(const FHitResult& PossibleFloorHit:PossibleFlootHits)
+	{
+		const bool bFloorReached =
+		FVector::Parallel(-PossibleFloorHit.ImpactNormal, FVector::UpVector) &&
+			GetUnrotatedClimbVelocity().Z<-10.f;
+
+		if(bFloorReached)
+			return true;
+	}
 	return false;
 }
 
